@@ -32,7 +32,7 @@ export function installScrollNavigation({ container, navigate, menuIsOpen }) {
       consumed = true;
       // Treat continued wheel events as momentum from the same gesture. A brief
       // pause is enough to start a new intentional page change afterwards.
-      blockedUntil = now + gestureGap;
+      blockedUntil = Math.max(blockedUntil, now + gestureGap);
       return;
     }
     const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? container.clientHeight : 1);

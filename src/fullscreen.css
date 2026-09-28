@@ -31,36 +31,29 @@ main {
 .progress-area { display: grid; justify-items: center; gap: 8px; }
 .scroll-hint { font-size: 8px; letter-spacing: .6px; color: #70756c; }
 
-.page-turn-sheet {
-  position: absolute;
-  inset: -4% -6%;
-  z-index: 10;
-  pointer-events: auto;
-  background: linear-gradient(174deg, #f5f2e9 0%, #eee9dd 47%, #f7f5ee 100%);
-  box-shadow: 0 -14px 35px #16223c0c, 0 18px 38px #16223c12;
-  will-change: transform;
+.site-transition-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--paper);
+  will-change: transform, filter;
 }
-.page-turn-sheet::before {
-  content: 'S & A';
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 150px;
-  padding: 12px 0;
-  transform: translate(-50%, -50%);
-  border-top: 1px solid #16223c15;
-  border-bottom: 1px solid #16223c15;
-  color: #16223c70;
-  text-align: center;
-  font: 34px/1 var(--script);
-  letter-spacing: -2px;
-}
-.page-turn-sheet::after {
-  content: '';
-  position: absolute;
-  inset: auto 0 0;
-  height: 8%;
-  background: linear-gradient(176deg, transparent 45%, #d5cebd40 49%, #fffdf6b0 53%, transparent 75%);
+.site-transition-new { z-index: 51; box-shadow: -18px 0 34px #16223c12, 18px 0 34px #16223c12; }
+.transition-main {
+  position: relative;
+  flex: 1;
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 /* Keep all five compositions in view on ordinary laptop displays. */
