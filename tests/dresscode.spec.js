@@ -1,0 +1,96 @@
+import { test, expect } from '@playwright/test';
+
+test('individual pieces drag independently, stay in bounds and reset', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/#dresscode');
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  const songkok = page.getByRole('button', { name: 'Songkok hitam', exact: true });
+  const shirt = page.getByRole('button', { name: 'Baju Melayu biru gelap', exact: true });
+  const start = await songkok.boundingBox();
+  const shirtStart = await shirt.boundingBox();
+  await songkok.hover();
+  await page.mouse.down();
+  await page.mouse.move(start.x + start.width / 2 + 70, start.y + start.height / 2 + 45, { steps: 10 });
+  await page.mouse.wheel(0, 250);
+  await expect(page.locator('main')).toHaveAttribute('data-page', 'dresscode');
+  await page.mouse.up();
+  const moved = await songkok.boundingBox();
+  expect(moved.x - start.x).toBeCloseTo(70, 0);
+  expect(moved.y - start.y).toBeCloseTo(45, 0);
+  expect((await shirt.boundingBox()).x).toBeCloseTo(shirtStart.x);
+  const savedLeft = await songkok.evaluate(el => el.style.left);
+  await page.locator('nav a[href="#location"]').click();
+  await page.locator('nav a[href="#dresscode"]').click();
+  expect(await songkok.evaluate(el => el.style.left)).toBe(savedLeft);
+  await songkok.hover();
+  await page.mouse.down();
+  await page.mouse.move(1439, 899, { steps: 10 });
+  await page.mouse.up();
+  const board = await page.locator('.outfit-board').boundingBox();
+  const edge = await songkok.boundingBox();
+  expect(edge.x + edge.width).toBeLessThanOrEqual(board.x + board.width + 1);
+  expect(edge.y + edge.height).toBeLessThanOrEqual(board.y + board.height + 1);
+  await page.getByRole('button', { name: 'Set semula susunan pakaian' }).click();
+  expect((await songkok.boundingBox()).x).toBeCloseTo(start.x, 0);
+  expect((await songkok.boundingBox()).y).toBeCloseTo(start.y, 0);
+});
+
+test('keyboard moves a piece without changing page and Escape restores it', async ({ page }) => {
+  await page.goto('/#dresscode');
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  const scarf = page.getByRole('button', { name: 'Selendang perang kelabu', exact: true });
+  await scarf.focus();
+  const initial = await scarf.boundingBox();
+  await page.keyboard.press('ArrowRight');
+  await page.keyboard.press('Shift+ArrowDown');
+  const moved = await scarf.boundingBox();
+  expect(moved.x - initial.x).toBeCloseTo(8, 0);
+  expect(moved.y - initial.y).toBeCloseTo(24, 0);
+  await expect(page.locator('main')).toHaveAttribute('data-page', 'dresscode');
+  await page.keyboard.press('Escape');
+  expect((await scarf.boundingBox()).x).toBeCloseTo(initial.x, 0);
+});
+
+test('phone tabs and touch dragging work without page swipes', async ({ page, context }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/#dresscode');
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(page.getByRole('button', { name: 'Selendang perang kelabu', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Lelaki', exact: true }).click();
+  const songkok = page.getByRole('button', { name: 'Songkok hitam', exact: true });
+  await expect(songkok).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Selendang perang kelabu', exact: true })).toBeHidden();
+  const before = await songkok.boundingBox();
+  const x = before.x + before.width / 2;
+  const y = before.y + before.height / 2;
+  const cdp = await context.newCDPSession(page);
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] });
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x + 40, y: y + 70 }] });
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  await expect(page.locator('main')).toHaveAttribute('data-page', 'dresscode');
+  const after = await songkok.boundingBox();
+  expect(after.x - before.x).toBeCloseTo(40, 0);
+  expect(after.y - before.y).toBeCloseTo(70, 0);
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await expect.poll(() => page.locator('.dress-piece:visible').count()).toBe(16);
+  const rect = await page.locator('.outfit-board').boundingBox();
+  const piece = await songkok.boundingBox();
+  expect(piece.x).toBeGreaterThanOrEqual(rect.x - 1);
+  expect(piece.x + piece.width).toBeLessThanOrEqual(rect.x + rect.width + 1);
+});
+
+test('transparent garment atlas is available', async ({ page }) => {
+  await page.goto('/#dresscode');
+  const info = await page.evaluate(async () => {
+    const image = new Image();
+    image.src = '/assets/dresscode-pieces.png';
+    await image.decode();
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 1;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(image, 0, 0);
+    return { width: image.naturalWidth, alpha: ctx.getImageData(0, 0, 1, 1).data[3] };
+  });
+  expect(info.width).toBeGreaterThan(1000);
+  expect(info.alpha).toBe(0);
+});

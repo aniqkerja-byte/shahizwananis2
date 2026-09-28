@@ -1,0 +1,101 @@
+/* The invitation is a single viewport; only genuinely long content scrolls. */
+html, body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+#app {
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-header { flex-shrink: 0; }
+.page-shell { flex: 1; min-height: 0; }
+main {
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+main::-webkit-scrollbar { display: none; }
+.page { flex-shrink: 0; }
+.sidebar.is-open { max-height: calc(100dvh - 90px); overflow-y: auto; }
+.progress-area { display: grid; justify-items: center; gap: 8px; }
+.scroll-hint { font-size: 8px; letter-spacing: .6px; color: #70756c; }
+
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(var(--page-enter-offset, 30px)); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Keep all five compositions in view on ordinary laptop displays. */
+@media (min-width: 768px) and (max-height: 900px) {
+  .desktop-header { height: 60px; }
+  .page-footer { height: 60px; }
+  .page { padding-top: 18px; padding-bottom: 18px; }
+  .home-intro .flourish { margin-bottom: 8px; }
+  .couple-names { font-size: 82px; max-width: 550px; margin: 15px auto 12px; }
+  .bride-name { font-size: 88px; }
+  .ampersand { font-size: 32px; }
+  .event-summary { margin-top: 18px; }
+  .short-rule { margin: 12px auto; }
+  .parents { margin-top: 19px; }
+  .home-rsvp { margin-top: 14px; }
+  .section-heading .eyebrow { margin-bottom: 12px; }
+  .section-heading h1 { font-size: 40px; }
+  .lookbook { margin-top: 16px; max-width: 510px; }
+  .outfits { height: min(32dvh, 280px); width: auto; max-height: none; margin: auto; }
+  .palette { margin-top: 12px; }
+  .dresscode-note { margin-top: 12px; }
+  .fan { width: 205px; margin: 20px auto 16px; }
+  .location-time { margin: 14px 0 18px !important; }
+  .contacts { margin-top: 23px; padding-top: 18px; }
+  .rsvp-page .flourish { margin-bottom: 12px; }
+  .rsvp-page form { margin-top: 22px; }
+  .form-field, fieldset { margin-bottom: 16px; }
+  .rsvp-signoff { margin-top: 17px; }
+  .scrapbook { margin-top: 25px; min-height: 0; }
+  .letter { padding: 20px 25px 15px; min-height: 0; }
+  .letter p { font-size: 14px; line-height: 1.45; margin-bottom: 12px; }
+  .letter .letter-greeting { font-size: 20px; margin-bottom: 14px; }
+  .letter .flourish { margin-bottom: 12px; }
+  .letter .letter-signoff { margin-top: 12px; }
+  .signature { width: 65px; margin-top: 7px; }
+  .memory { width: 110px; padding-bottom: 10px; }
+  .memory img { height: 90px; }
+  .memory-1, .memory-4 { top: 5px; }
+  .memory-2, .memory-5 { top: 154px; }
+  .memory-3, .memory-6 { top: 303px; }
+  .note-bottom { margin-top: 20px; font-size: 14px; }
+}
+
+@media (max-width: 767px) {
+  .page-shell { min-height: 0; }
+  .scroll-hint { font-size: 7px; letter-spacing: 0; }
+}
+
+@media (max-width: 767px) and (max-height: 900px) {
+  .mobile-header { height: 64px; }
+  .sidebar { top: 63px; }
+  .page-footer { height: 60px; }
+  .home-page { padding: 20px 0; }
+  .home-intro .flourish { margin-bottom: 8px; }
+  .couple-names { font-size: 64px; max-width: 295px; margin: 15px auto 10px; }
+  .bride-name { font-size: 72px; }
+  .ampersand { font-size: 26px; }
+  .event-summary { margin-top: 18px; }
+  .short-rule { margin: 12px auto; }
+  .parents { margin-top: 20px; }
+  .home-rsvp { margin-top: 15px; }
+  .dresscode-page, .location-page, .rsvp-page { padding: 22px 0; }
+  .dresscode-page h1 { font-size: 35px; }
+  .lookbook { margin-top: 20px; }
+  .palette { margin-top: 18px; }
+  .dresscode-note { margin-top: 17px; }
+  .rsvp-page form { margin-top: 23px; }
+  .rsvp-signoff { margin-top: 18px; }
+}
