@@ -1,5 +1,24 @@
 import { test, expect } from '@playwright/test';
 
+async function expectPageInViewport(page, id) {
+  await page.evaluate(() => document.fonts.ready);
+  await page.evaluate(() => new Promise(requestAnimationFrame));
+  await page.evaluate(() => new Promise(requestAnimationFrame));
+  const bounds = await page.locator('.page').evaluate(el => {
+    const pageRect = el.getBoundingClientRect();
+    const mainRect = el.parentElement.getBoundingClientRect();
+    return {
+      top: pageRect.top - mainRect.top,
+      bottom: pageRect.bottom - mainRect.top,
+      mainHeight: mainRect.height,
+      overflow: getComputedStyle(el.parentElement).overflowY,
+    };
+  });
+  expect(bounds.top, id).toBeGreaterThanOrEqual(-1);
+  expect(bounds.bottom, id).toBeLessThanOrEqual(bounds.mainHeight + 1);
+  expect(bounds.overflow, id).toBe('hidden');
+}
+
 test('navigation, direct links, history and assets work', async ({ page }) => {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -82,9 +101,8 @@ for(const width of [320,390,768,1440]) {
       await page.evaluate(()=>document.fonts.ready);
       await expect(page.locator('#page-title')).toBeVisible();
       expect(await page.evaluate(()=>document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-      await page.locator('.page-footer').scrollIntoViewIfNeeded();
-      await page.locator('main').evaluate(el => { el.scrollTop = el.scrollHeight; });
       await expect.poll(()=>page.locator('main img').evaluateAll(imgs=>imgs.every(img=>img.complete && img.naturalWidth>0))).toBe(true);
+      await expectPageInViewport(page, id);
     }
   });
 }
@@ -133,12 +151,10 @@ test('wheel turns one page per gesture without skipping or wrapping', async ({ p
 for (const viewport of [{ width: 1366, height: 768 }, { width: 1440, height: 900 }]) {
   test(`all five pages are fully visible at ${viewport.width}x${viewport.height}`, async ({ page }) => {
     await page.setViewportSize(viewport);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
     for (const id of ['home', 'dresscode', 'location', 'rsvp', 'note']) {
       await page.goto(`/#${id}`);
-      await page.evaluate(() => document.fonts.ready);
-      await page.emulateMedia({ reducedMotion: 'reduce' });
-      const dimensions = await page.locator('main').evaluate(el => ({ height: el.clientHeight, content: el.scrollHeight }));
-      expect(dimensions.content, id).toBeLessThanOrEqual(dimensions.height + 2);
+      await expectPageInViewport(page, id);
       const footer = await page.locator('.page-footer').boundingBox();
       expect(footer.y + footer.height).toBeLessThanOrEqual(viewport.height + 1);
       expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBeLessThanOrEqual(viewport.height);
@@ -146,19 +162,14 @@ for (const viewport of [{ width: 1366, height: 768 }, { width: 1440, height: 900
   });
 }
 
-test('short-screen content scrolls before a fresh gesture switches pages', async ({ page }) => {
+test('short-screen content scales and one downward scroll opens the next page', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 600 });
-  await page.goto('/#note');
-  await page.mouse.move(200, 350);
+  await page.goto('/#rsvp');
+  await expectPageInViewport(page, 'rsvp');
+  await page.mouse.move(200, 100);
   await page.mouse.wheel(0, 200);
-  await expect.poll(() => page.locator('main').evaluate(el => el.scrollTop)).toBeGreaterThan(0);
   await expect(page.locator('main')).toHaveAttribute('data-page', 'note');
-  await page.mouse.wheel(0, -4000);
-  await expect.poll(() => page.locator('main').evaluate(el => el.scrollTop)).toBe(0);
-  await expect(page.locator('main')).toHaveAttribute('data-page', 'note');
-  await page.waitForTimeout(250);
-  await page.mouse.wheel(0, -120);
-  await expect(page.locator('main')).toHaveAttribute('data-page', 'rsvp');
+  await expectPageInViewport(page, 'note');
 });
 
 test('scroll does not navigate from form controls or an open menu', async ({ page }) => {
@@ -176,7 +187,6 @@ test('scroll does not navigate from form controls or an open menu', async ({ pag
 test('touch swipe changes pages and vertical keyboard navigation works', async ({ page, context }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/#dresscode');
-  await page.locator('main').evaluate(el => { el.scrollTop = el.scrollHeight; });
   const cdp = await context.newCDPSession(page);
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: 200, y: 790 }] });
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: 200, y: 690 }] });

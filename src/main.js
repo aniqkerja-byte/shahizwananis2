@@ -46,6 +46,20 @@ let activeIndex = 0;
 let draft = { name: '', attendance: '', pax: '1' };
 let confirmation = null;
 let cleanupPage = () => {};
+let fitFrame = 0;
+
+function fitActivePage() {
+  const page = main.querySelector('.page');
+  if (!page || !main.clientHeight) return;
+  page.style.setProperty('--page-scale', '1');
+  const scale = Math.min(1, Math.max(0, (main.clientHeight - 8) / page.offsetHeight));
+  page.style.setProperty('--page-scale', scale.toFixed(4));
+}
+
+function queueFitActivePage() {
+  cancelAnimationFrame(fitFrame);
+  fitFrame = requestAnimationFrame(fitActivePage);
+}
 const scrollNavigation = installScrollNavigation({
   container: main,
   menuIsOpen: () => document.querySelector('.menu-toggle').getAttribute('aria-expanded') === 'true' || Boolean(main.querySelector('.outfit-board.is-dragging')),
@@ -132,10 +146,13 @@ function renderPage({ focus = false } = {}) {
   next.setAttribute('aria-label',activeIndex===4 ? 'Kembali ke Utama' : `Halaman seterusnya: ${pages[activeIndex+1].label}`);
   setMenu(false);
   window.scrollTo({ top: 0, behavior: 'instant' });
-  main.scrollTop = 0;
   if (focus) scrollNavigation.reset();
   if (page.id === 'rsvp') bindRsvp();
   if (page.id === 'dresscode') cleanupPage = bindDresscode();
+  main.querySelectorAll('img').forEach(image => image.addEventListener('load', queueFitActivePage, { once: true }));
+  fitActivePage();
+  queueFitActivePage();
+  document.fonts.ready.then(queueFitActivePage);
   if (focus) document.querySelector('#page-title').focus({preventScroll:true});
   document.querySelector('#page-announcement').textContent = `${page.label}, halaman ${activeIndex+1} daripada 5`;
 }
@@ -192,4 +209,5 @@ document.addEventListener('keydown',event=>{
   if(event.key==='ArrowLeft' && activeIndex>0) {event.preventDefault();location.hash=pages[activeIndex-1].id;}
 });
 window.addEventListener('hashchange',()=>renderPage({focus:true}));
+window.addEventListener('resize', queueFitActivePage);
 renderPage();

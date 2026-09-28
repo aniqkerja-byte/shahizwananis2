@@ -1,4 +1,4 @@
-/* The invitation is a single viewport; only genuinely long content scrolls. */
+/* Every invitation section remains within one viewport. */
 html, body {
   height: 100%;
   overflow: hidden;
@@ -16,20 +16,21 @@ html, body {
 .page-shell { flex: 1; min-height: 0; }
 main {
   min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-  overscroll-behavior: contain;
-  scrollbar-width: none;
+  overflow: hidden;
+  overscroll-behavior: none;
 }
-main::-webkit-scrollbar { display: none; }
-.page { flex-shrink: 0; }
+.page {
+  flex-shrink: 0;
+  transform: scale(var(--page-scale, 1));
+  transform-origin: center top;
+}
 .sidebar.is-open { max-height: calc(100dvh - 90px); overflow-y: auto; }
 .progress-area { display: grid; justify-items: center; gap: 8px; }
 .scroll-hint { font-size: 8px; letter-spacing: .6px; color: #70756c; }
 
 @keyframes page-enter {
-  from { opacity: 0; transform: translateY(var(--page-enter-offset, 30px)); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(var(--page-enter-offset, 30px)) scale(var(--page-scale, 1)); }
+  to { opacity: 1; transform: translateY(0) scale(var(--page-scale, 1)); }
 }
 
 /* Keep all five compositions in view on ordinary laptop displays. */

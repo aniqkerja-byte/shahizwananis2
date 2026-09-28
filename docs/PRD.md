@@ -91,10 +91,10 @@ Closing copy (HTML entity artefacts removed; wording preserved):
 - Bottom previous/next arrows and page progress indicator. Previous is disabled on Home; the final page can return to Home.
 - Each page occupies one viewport, with the header/footer always visible. Scroll down/up switches to the next/previous page. One continuous wheel/trackpad gesture advances at most once; a transition guard prevents accidental skips. Scroll navigation stops at the first/last page rather than wrapping.
 - Vertical touch swipes and Page Up/Down also navigate. Inputs, form controls, open menus, horizontal gestures and pinch/zoom are not hijacked. A mobile menu and arrow controls remain available.
-- Compact spacing fits typical desktop/laptop viewports. Where small screens, zoom or validation errors make content too tall, scroll the content within the page first; only a fresh gesture at its boundary switches pages. No content is clipped or scaled into unreadable text.
+- Compact spacing fits typical desktop/laptop viewports. Every section remains in one viewport; when a small screen, zoom or validation errors make content taller, the section scales down to remain fully visible. A downward/upward gesture always navigates directly to the next/previous page.
 - Keyboard arrows navigate pages outside inputs and controls. Form typing and input steppers must not change pages. Escape closes the mobile menu.
 - Semantic headings, associated form labels, error messages, visible focus, sufficiently large tap areas and decorative SVGs hidden from assistive technology.
-- Honour reduced motion. No horizontal overflow at 320px through desktop widths; permit internal vertical scrolling instead of clipping content.
+- Honour reduced motion. No horizontal overflow or internal vertical scrolling at 320px through desktop widths.
 - All fonts and imagery are bundled locally. Only intentional Maps/WhatsApp link clicks leave the site.
 
 ## 6. Implementation and assets
@@ -109,7 +109,7 @@ No admin dashboard, Google Sheets connection, login, deployment, real guest list
 
 - Check all five pages visually at desktop and mobile sizes; compare their hierarchy and compositions against the main reference.
 - Confirm menu, arrow, keyboard and history navigation; direct-link refresh; unknown route fallback.
-- Confirm wheel, trackpad and swipe navigation advances once per gesture, respects content boundaries, and does not hijack form controls or garment dragging.
+- Confirm wheel, trackpad and swipe navigation advances once per gesture, directly changes pages, and does not hijack form controls or garment dragging.
 - Drag clothing with mouse and touch; confirm independent motion, bounds, Reset, keyboard movement, navigation persistence, mobile group switching and responsive reflow.
 - Verify exact event/parent/PIC details, allowed colour guidance and full closing copy.
 - Test empty/whitespace name, missing attendance, invalid guest counts, yes/no paths, form draft preservation and edit after confirmation.

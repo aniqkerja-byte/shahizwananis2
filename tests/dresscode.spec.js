@@ -44,8 +44,9 @@ test('keyboard moves a piece without changing page and Escape restores it', asyn
   await page.keyboard.press('ArrowRight');
   await page.keyboard.press('Shift+ArrowDown');
   const moved = await scarf.boundingBox();
-  expect(moved.x - initial.x).toBeCloseTo(8, 0);
-  expect(moved.y - initial.y).toBeCloseTo(24, 0);
+  const scale = Number(await page.locator('.page').evaluate(el => getComputedStyle(el).getPropertyValue('--page-scale')));
+  expect(moved.x - initial.x).toBeCloseTo(8 * scale, 0);
+  expect(moved.y - initial.y).toBeCloseTo(24 * scale, 0);
   await expect(page.locator('main')).toHaveAttribute('data-page', 'dresscode');
   await page.keyboard.press('Escape');
   expect((await scarf.boundingBox()).x).toBeCloseTo(initial.x, 0);

@@ -36,6 +36,6 @@ RSVP is a simulation. Responses remain in memory only and are never sent or save
 
 Edit wedding copy in src/content.js, pages in src/main.js, and visual styling in src/styles.css. The future RSVP integration boundary is src/rsvp.js; credentials must never be embedded in frontend code. Image provenance and generation prompt: [docs/ASSETS.md](docs/ASSETS.md).
 
-Scroll or swipe to change pages. Each page fills the viewport; content that exceeds a short screen scrolls internally before a fresh gesture switches pages. Fullscreen behaviour is in `src/scroll-navigation.js` and `src/fullscreen.css`.
+Scroll or swipe to change pages. Each page fills one viewport without internal scrolling; sections scale responsively when a short screen needs more space. Fullscreen behaviour is in `src/scroll-navigation.js` and `src/fullscreen.css`.
 
 The Dresscode page has 16 independently draggable garment/accessory pieces. Drag with mouse or touch, use arrow keys on a focused piece, or press Reset to restore the arrangement. On phones, switch between Wanita and Lelaki. Interaction code is in `src/dresscode.js`; the artwork is `public/assets/dresscode-pieces.png`.

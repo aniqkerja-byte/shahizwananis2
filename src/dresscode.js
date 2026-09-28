@@ -97,9 +97,12 @@ export function bindDresscode() {
   });
   board.addEventListener('pointermove', event => {
     if (!drag || event.pointerId !== drag.pointerId) return;
+    const visual = board.getBoundingClientRect();
+    const scaleX = visual.width / board.clientWidth || 1;
+    const scaleY = visual.height / board.clientHeight || 1;
     update(drag.button, {
-      x: drag.start.x + (event.clientX - drag.startX) / board.clientWidth * 100,
-      y: drag.start.y + (event.clientY - drag.startY) / board.clientHeight * 100,
+      x: drag.start.x + (event.clientX - drag.startX) / scaleX / board.clientWidth * 100,
+      y: drag.start.y + (event.clientY - drag.startY) / scaleY / board.clientHeight * 100,
     });
   });
   board.addEventListener('pointerup', endDrag);

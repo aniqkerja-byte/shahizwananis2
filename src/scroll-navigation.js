@@ -1,5 +1,4 @@
-// One deliberate wheel/swipe gesture changes one page. Native scrolling stays
-// available when a small viewport, zoom, or form errors make the content taller.
+// One deliberate wheel/swipe gesture changes one fullscreen page.
 export function installScrollNavigation({ container, navigate, menuIsOpen }) {
   const gestureGap = 200;
   const transitionTime = 650;
@@ -11,14 +10,6 @@ export function installScrollNavigation({ container, navigate, menuIsOpen }) {
 
   const isControl = target => target instanceof Element &&
     Boolean(target.closest('input, textarea, select, button, [contenteditable="true"]'));
-  const canScroll = direction => {
-    // The entrance transform can temporarily enlarge scrollHeight even though
-    // the actual layout fits; don't mistake that animation for long content.
-    if (container.firstElementChild?.offsetHeight <= container.clientHeight + 2) return false;
-    return direction > 0
-      ? container.scrollTop + container.clientHeight < container.scrollHeight - 2
-      : container.scrollTop > 2;
-  };
   const changePage = direction => {
     if (performance.now() < blockedUntil) return;
     if (navigate(direction)) blockedUntil = performance.now() + transitionTime;
@@ -39,17 +30,13 @@ export function installScrollNavigation({ container, navigate, menuIsOpen }) {
     event.preventDefault();
     if (now < blockedUntil) {
       consumed = true;
+      // Treat continued wheel events as momentum from the same gesture. A brief
+      // pause is enough to start a new intentional page change afterwards.
+      blockedUntil = now + gestureGap;
       return;
     }
     const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? container.clientHeight : 1);
     const direction = Math.sign(delta);
-    if (canScroll(direction)) {
-      container.scrollTop += delta;
-      consumed = true;
-      total = 0;
-      return;
-    }
-    // Reaching the end of a long page never changes pages mid-gesture.
     if (consumed) return;
     total = Math.sign(total) !== direction ? delta : total + delta;
     if (Math.abs(total) >= 55) {
@@ -65,15 +52,13 @@ export function installScrollNavigation({ container, navigate, menuIsOpen }) {
     touch = {
       x: event.touches[0].clientX,
       y: event.touches[0].clientY,
-      canScrollDown: canScroll(1),
-      canScrollUp: canScroll(-1),
     };
   }, { passive: true });
   window.addEventListener('touchmove', event => {
     if (!touch || event.touches.length !== 1) { touch = null; return; }
     const dy = touch.y - event.touches[0].clientY;
     const dx = touch.x - event.touches[0].clientX;
-    if (Math.abs(dy) > Math.abs(dx) && !(dy > 0 ? touch.canScrollDown : touch.canScrollUp)) {
+    if (Math.abs(dy) > Math.abs(dx)) {
       event.preventDefault();
     }
   }, { passive: false });
@@ -84,7 +69,6 @@ export function installScrollNavigation({ container, navigate, menuIsOpen }) {
     const dy = gesture.y - event.changedTouches[0].clientY;
     const dx = gesture.x - event.changedTouches[0].clientX;
     if (Math.abs(dy) < 60 || Math.abs(dy) <= Math.abs(dx)) return;
-    if (dy > 0 ? gesture.canScrollDown : gesture.canScrollUp) return;
     changePage(Math.sign(dy));
   }, { passive: true });
   window.addEventListener('touchcancel', () => { touch = null; }, { passive: true });
@@ -96,8 +80,7 @@ export function installScrollNavigation({ container, navigate, menuIsOpen }) {
       : ['ArrowUp', 'PageUp'].includes(event.key) ? -1 : 0;
     if (!direction) return;
     event.preventDefault();
-    if (canScroll(direction)) container.scrollTop += direction * container.clientHeight * .85;
-    else changePage(direction);
+    changePage(direction);
   });
 
   return {
