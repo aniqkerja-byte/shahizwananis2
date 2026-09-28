@@ -1,5 +1,30 @@
 # Assets and provenance
 
+## Open Graph — kolaj kenangan
+
+Generated with the built-in imagegen tool on 28 September 2026, using a contact sheet of the six client-supplied childhood photos and S&A monogram. `scripts/prepare-og-reference.mjs` builds that labelled input sheet from the original web assets. The source photographs are unchanged in the repository; the generated collage is an AI-composited rendering with monochrome styling.
+
+Selected full-resolution output: `references/og-kenangan-source.png`. Production share image: `public/assets/og-kenangan-v1.jpg`, exported to 1200 × 630 JPEG with `node scripts/export-og.mjs`. The export contains the full composition without cropping. All original client files remain available separately.
+
+Exact generation prompt:
+
+```text
+Use case: compositing
+Asset type: finished Open Graph wedding invitation share card, landscape 1200 x 630 aspect ratio (1.90476:1).
+The reference is a contact sheet. Its labelled cells 1-6 are six original childhood photos to insert as photographic prints, each exactly once. Cell 7: original S&A monogram to use small above the title. Preserve identities, faces, poses, people and details in every photo; do not redraw people, invent faces, or combine people from different photographs into one photo.
+Primary request: luxurious nostalgic Malay wedding invitation, warm ivory paper #F7F5EE, navy ink #16223C. Three lightly angled vintage polaroid prints on the left using inputs 1-3 and three on the right using inputs 4-6. Subtle monochrome photo treatment. Keep each photo distinct and all six recognisable, with faces uncovered. Middle 50% is clear for elegant large calligraphic names and readable serif date/location. Delicate navy hairline frame, small restrained flourishes, soft paper shadows, generous negative space. Name typography is focal point, legible at thumbnail size. Small original monogram above title. Flat full-bleed graphic, no surrounding scene or devices.
+Exact text only, centered:
+"MAJLIS PERKAHWINAN"
+"Shahizwan"
+"& Anis"
+"9 JANUARI 2027"
+"Dewan Perdana, Tampin"
+Keep text and monogram within middle 50% of canvas, safe from edge crops; photos may frame edges. Use elegant calligraphy for names, serif for location, tracked small caps for date and label. No English, no extra words, no watermark. Final polished digital share card, not a mockup.
+Use the photographs in the contact sheet as source inserts only. Do not copy the white contact-sheet layout, labels, filenames or numbers into the final card.
+```
+
+## Existing website assets
+
 - Dresscode artwork: generated with the built-in image generation tool using the imagegen skill, 28 September 2026. Selected output: `public/assets/dresscode-lookbook.png`. The website uses `public/assets/dresscode-lookbook.webp` (compressed from the PNG); the source PNG is retained.
 - The artwork was reviewed for four outfit combinations, no people or logos, and no white or silver clothing. Two CSS viewports show the womenswear and menswear halves. The source is not cropped or repainted.
 - Childhood photographs and the S&A monogram are copies of the files supplied by the client. Originals are retained under references/client-assets/. Grayscale/paper styling is applied only in CSS.
