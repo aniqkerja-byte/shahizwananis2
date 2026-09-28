@@ -40,6 +40,8 @@ Edit wedding copy in src/content.js, pages in src/main.js, and visual styling in
 
 Scroll or swipe to change pages. Each page fills one viewport without internal scrolling; sections scale responsively when a short screen needs more space. Fullscreen behaviour is in `src/scroll-navigation.js` and `src/fullscreen.css`.
 
+Page changes use a direction-aware invitation-sheet transition followed by staggered content reveals. The controller is in `src/page-transitions.js`; it settles safely when navigation is interrupted, the viewport changes, or reduced-motion is enabled.
+
 The Dresscode page has 16 independently draggable garment/accessory pieces. Drag with mouse or touch, use arrow keys on a focused piece, or press Reset to restore the arrangement. On phones, switch between Wanita and Lelaki. Interaction code is in `src/dresscode.js`; the artwork is `public/assets/dresscode-pieces.png`.
 
 ## Preview perkongsian pautan

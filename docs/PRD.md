@@ -95,6 +95,7 @@ Closing copy (HTML entity artefacts removed; wording preserved):
 - Keyboard arrows navigate pages outside inputs and controls. Form typing and input steppers must not change pages. Escape closes the mobile menu.
 - Semantic headings, associated form labels, error messages, visible focus, sufficiently large tap areas and decorative SVGs hidden from assistive technology.
 - Honour reduced motion. No horizontal overflow or internal vertical scrolling at 320px through desktop widths.
+- Page changes use a direction-aware paper-sheet transition and staggered content reveal. Rapid navigation, resizing and reduced-motion changes must always settle on the latest requested page without leaving an overlay behind.
 - All fonts and imagery are bundled locally. Only intentional Maps/WhatsApp link clicks leave the site.
 
 ## 6. Implementation and assets

@@ -11,6 +11,7 @@ import { pages, wedding } from './content.js';
 import { submitRsvp, validateRsvp } from './rsvp.js';
 import { installScrollNavigation } from './scroll-navigation.js';
 import { dresscodeBoard, bindDresscode } from './dresscode.js';
+import { createPageTransitions } from './page-transitions.js';
 
 const arrow = (direction = 'right') => `<svg viewBox="0 0 32 16" fill="none" aria-hidden="true" class="arrow-icon ${direction}"><path d="M1 8h28M22 1l7 7-7 7"/></svg>`;
 const flourish = `<svg class="flourish" viewBox="0 0 100 30" fill="none" aria-hidden="true"><path d="M8 15h26m32 0h26M50 15c-18-22-27 0-10 0-17 0-8 22 10 0 18 22 27 0 10 0 17 0 8-22-10 0Z"/><path d="M50 5v20M43 15h14"/></svg>`;
@@ -42,6 +43,7 @@ app.innerHTML = `
   <div id="page-announcement" class="sr-only" aria-live="polite"></div>`;
 
 const main = document.querySelector('main');
+const pageTransitions = createPageTransitions(main);
 let activeIndex = 0;
 let draft = { name: '', attendance: '', pax: '1' };
 let confirmation = null;
@@ -120,11 +122,23 @@ function setMenu(open) {
   document.querySelector('.sidebar').classList.toggle('is-open', open);
 }
 
-function renderPage({ focus = false } = {}) {
+function renderPage({ focus = false, immediate = false } = {}) {
+  if (immediate) {
+    pageTransitions.finish();
+    commitPage({ focus });
+    return;
+  }
+  const nextIndex = Math.max(0, pages.findIndex(p => p.id === location.hash.slice(1)));
+  void pageTransitions.run(() => commitPage({ focus }), {
+    direction: nextIndex < activeIndex ? -1 : 1,
+    initial: !main.querySelector('.page'),
+  });
+}
+
+function commitPage({ focus = false } = {}) {
   cleanupPage();
   cleanupPage = () => {};
   const hash = location.hash.slice(1);
-  const previousIndex = activeIndex;
   activeIndex = Math.max(0, pages.findIndex(p=>p.id===hash));
   if (hash && !pages.some(p=>p.id===hash)) history.replaceState(null, '', '#home');
   const page = pages[activeIndex];
@@ -133,7 +147,6 @@ function renderPage({ focus = false } = {}) {
     if (link.dataset.page === page.id) link.setAttribute('aria-current','page');
     else link.removeAttribute('aria-current');
   });
-  main.style.setProperty('--page-enter-offset', activeIndex < previousIndex ? '-30px' : '30px');
   main.innerHTML = templates[activeIndex]();
   main.dataset.page = page.id;
   document.querySelector('.page-number').textContent = `0${activeIndex+1}`;
@@ -160,7 +173,7 @@ function renderPage({ focus = false } = {}) {
 function bindRsvp() {
   const form = document.querySelector('#rsvp-form');
   if (!form) {
-    document.querySelector('.edit-rsvp').addEventListener('click',()=>{confirmation=null;renderPage({focus:true});});
+    document.querySelector('.edit-rsvp').addEventListener('click',()=>{confirmation=null;renderPage({focus:true,immediate:true});});
     return;
   }
   form.elements.name.value = draft.name;
@@ -193,7 +206,7 @@ function bindRsvp() {
     const button=form.querySelector('[type="submit"]');
     button.disabled=true;
     const result=await submitRsvp(draft);
-    if(result.ok){confirmation=result;renderPage({focus:true});}
+    if(result.ok){confirmation=result;renderPage({focus:true,immediate:true});}
     else button.disabled=false;
   });
 }

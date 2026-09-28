@@ -1,6 +1,8 @@
 import { test, expect } from '@playwright/test';
 
 async function expectPageInViewport(page, id) {
+  await expect(page.locator('main')).toHaveAttribute('data-page', id);
+  await expect(page.locator('main')).not.toHaveAttribute('data-transitioning');
   await page.evaluate(() => document.fonts.ready);
   await page.evaluate(() => new Promise(requestAnimationFrame));
   await page.evaluate(() => new Promise(requestAnimationFrame));
