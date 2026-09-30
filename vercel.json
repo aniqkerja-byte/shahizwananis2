@@ -1,0 +1,4 @@
+{
+  "buildCommand": "npm run build:groom",
+  "outputDirectory": "dist/groom"
+}
