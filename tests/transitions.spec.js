@@ -14,7 +14,7 @@ test('horizontal transition handles interrupted navigation without stale pages o
   await expect(page.locator('.site-transition-layer')).toHaveCount(0);
   await expect(page.locator('.page')).toHaveCount(1);
   await expect(page.locator('#page-title')).toBeFocused();
-  await page.getByRole('button', { name: 'Halaman sebelumnya' }).click();
+  await page.locator('nav a[href="#rsvp"]').click();
   await expect(page.locator('main')).toHaveAttribute('data-page', 'rsvp');
   await page.getByLabel('Nama penuh').fill('Tetamu Animasi');
   await page.locator('nav a[href="#home"]').click();

@@ -25,11 +25,11 @@ const compact = () => matchMedia('(max-width: 600px)').matches;
 export function dresscodeBoard() {
   return `<div class="dresscode-playground">
     <div class="outfit-tabs" role="group" aria-label="Pilihan pakaian"><button type="button" data-outfit-group="women">Wanita</button><button type="button" data-outfit-group="men">Lelaki</button></div>
-    <div class="outfit-headings" aria-hidden="true"><span class="eyebrow">Untuk wanita</span><span class="eyebrow">Untuk lelaki</span></div>
+    <svg class="filter-defs" aria-hidden="true" focusable="false"><filter id="dresscode-sketch" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values="0" result="mono"/><feConvolveMatrix in="mono" order="3" kernelMatrix="-1 -1 -1 -1 8 -1 -1 -1 -1" divisor="1" bias="0.12" preserveAlpha="true" result="edges"/><feComponentTransfer in="edges"><feFuncR type="table" tableValues="1 0.55 0.08 0"/><feFuncG type="table" tableValues="1 0.55 0.08 0"/><feFuncB type="table" tableValues="1 0.55 0.08 0"/></feComponentTransfer></filter></svg>
     <div class="outfit-board" role="group" aria-label="Lookbook interaktif" aria-describedby="drag-help" data-group="${selectedGroup}">
       ${pieces.map(piece => `<button type="button" class="dress-piece" data-piece="${piece.id}" data-side="${piece.side}" aria-label="${piece.label}" aria-describedby="drag-help" title="${piece.label}" style="--sprite-x:${(piece.cell % 4) * 100 / 3}%;--sprite-y:${Math.floor(piece.cell / 4) * 100 / 3}%;z-index:${piece.layer}"><span class="piece-art" aria-hidden="true"></span></button>`).join('')}
     </div>
-    <div class="outfit-toolbar"><p id="drag-help">Susun gaya anda <span>· Seret item pakaian ke mana-mana</span></p><button type="button" class="reset-outfits" aria-label="Set semula susunan pakaian">↺ <span>Semula</span></button></div>
+    <span class="sr-only" id="drag-help">Seret pakaian untuk menyusun gaya. Tekan Escape untuk memulangkan item ke kedudukan asal.</span>
     <span class="sr-only" id="outfit-status" aria-live="polite"></span>
     <span class="sr-only">Guna Tab untuk pilih item. Tekan anak panah untuk alih item, Shift untuk langkah lebih besar, atau Escape untuk pulangkan item ke kedudukan asal.</span>
   </div>`;
@@ -128,13 +128,6 @@ export function bindDresscode() {
       update(button, { x: point.x + dx * step / board.clientWidth * 100, y: point.y + dy * step / board.clientHeight * 100 });
       button.style.zIndex = ++topLayer;
     }
-  });
-  document.querySelector('.reset-outfits').addEventListener('click', () => {
-    endDrag();
-    arrangements.clear();
-    buttons.forEach(button => { button.style.zIndex = pieces.find(p => p.id === button.dataset.piece).layer; });
-    layout();
-    status.textContent = 'Semua pakaian dipulangkan ke susunan asal.';
   });
   const tabs = [...document.querySelectorAll('[data-outfit-group]')];
   const select = group => {

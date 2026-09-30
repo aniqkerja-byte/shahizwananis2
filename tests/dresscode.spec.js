@@ -3,6 +3,12 @@ import { test, expect } from '@playwright/test';
 test('individual pieces drag independently, stay in bounds and reset', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/#dresscode');
+  await expect(page.locator('.dresscode-page')).not.toContainText('Inspirasi gaya');
+  await expect(page.locator('.dresscode-page')).not.toContainText('Untuk wanita');
+  await expect(page.locator('.dresscode-page')).not.toContainText('Pilihan warna inspirasi');
+  await expect(page.locator('.dresscode-page')).toContainText('Tradisional / Smart Casual');
+  await expect(page.locator('.dresscode-page')).toContainText('kecuali putih dan silver.');
+  await expect(page.locator('.page-footer')).toHaveCount(0);
   await page.emulateMedia({ reducedMotion: 'reduce' });
   const songkok = page.getByRole('button', { name: 'Songkok hitam', exact: true });
   const shirt = page.getByRole('button', { name: 'Baju Melayu biru gelap', exact: true });
@@ -30,7 +36,8 @@ test('individual pieces drag independently, stay in bounds and reset', async ({ 
   const edge = await songkok.boundingBox();
   expect(edge.x + edge.width).toBeLessThanOrEqual(board.x + board.width + 1);
   expect(edge.y + edge.height).toBeLessThanOrEqual(board.y + board.height + 1);
-  await page.getByRole('button', { name: 'Set semula susunan pakaian' }).click();
+  await songkok.focus();
+  await page.keyboard.press('Escape');
   expect((await songkok.boundingBox()).x).toBeCloseTo(start.x, 0);
   expect((await songkok.boundingBox()).y).toBeCloseTo(start.y, 0);
 });

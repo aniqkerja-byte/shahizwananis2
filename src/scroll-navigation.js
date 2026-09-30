@@ -1,7 +1,7 @@
 // One deliberate wheel/swipe gesture changes one fullscreen page.
 export function installScrollNavigation({ container, navigate, menuIsOpen }) {
-  const gestureGap = 200;
-  const transitionTime = 650;
+  const gestureGap = 350;
+  const transitionTime = 520;
   let lastWheel = -Infinity;
   let total = 0;
   let consumed = false;
@@ -39,7 +39,7 @@ export function installScrollNavigation({ container, navigate, menuIsOpen }) {
     const direction = Math.sign(delta);
     if (consumed) return;
     total = Math.sign(total) !== direction ? delta : total + delta;
-    if (Math.abs(total) >= 55) {
+    if (Math.abs(total) >= 32) {
       consumed = true;
       total = 0;
       changePage(direction);
@@ -68,7 +68,7 @@ export function installScrollNavigation({ container, navigate, menuIsOpen }) {
     if (!gesture || !event.changedTouches.length || event.touches.length || menuIsOpen()) return;
     const dy = gesture.y - event.changedTouches[0].clientY;
     const dx = gesture.x - event.changedTouches[0].clientX;
-    if (Math.abs(dy) < 60 || Math.abs(dy) <= Math.abs(dx)) return;
+    if (Math.abs(dy) < 36 || Math.abs(dy) <= Math.abs(dx)) return;
     changePage(Math.sign(dy));
   }, { passive: true });
   window.addEventListener('touchcancel', () => { touch = null; }, { passive: true });

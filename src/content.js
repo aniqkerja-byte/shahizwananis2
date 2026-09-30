@@ -14,21 +14,23 @@ export const wedding = {
     bride: ["Dato’ Ir. Jamlus Aziz", 'Datin Hamidah Mansor'],
   },
   contacts: [
+    { name: 'Aiman Jamil', side: 'Pihak perempuan', phone: '012 324 5122', international: '60123245122' },
     { name: 'Azfar Jamil', side: 'Pihak perempuan', phone: '019 276 7122', international: '60192767122' },
     { name: 'Wan', side: 'Pihak lelaki', phone: '011 2992 2304', international: '601129922304' },
   ],
   closing: [
-    'Hari ini tidak akan lengkap tanpa kehadiran anda. Doa, restu dan sokongan anda telah menjadikan hari ini sebuah kenyataan.',
-    'Dalam setiap doa dan restu yang diterima, kami dipertemukan dan ditakdirkan sampai ke sini. Takdir kami sentiasa dipelihara dan dipandu dengan cara yang paling indah melalui anda semua.',
+    'This day would not feel complete without you. Your doa, your prayers, your restu have made this day happen.',
+    'Dalam setiap doa dan restu yang diterima, kami dipertemukan dan ditakdirkan sampai ke sini. Our takdir has always been cared for and guided in the most beautiful ways through you.',
     'Terima kasih daripada kami untuk semua doa-doa yang baik. Terima kasih sudi luangkan masa untuk raikan kami. Semoga hari kita nanti diberkati dan jadi satu memori yang indah untuk semua.',
-    'Jumpa nanti, kami tidak sabar untuk bertemu anda!',
+    'Jumpa nanti, we can’t wait to see you!',
   ],
 };
 
 export const pages = [
   { id: 'home', label: 'Utama', eyebrow: 'Jemputan' },
-  { id: 'dresscode', label: 'Pakaian', eyebrow: 'Inspirasi gaya' },
+  { id: 'invitation', label: 'Jemputan', eyebrow: 'Walimatulurus' },
+  { id: 'dresscode', label: 'Dresscode', eyebrow: 'Inspirasi gaya' },
   { id: 'location', label: 'Lokasi', eyebrow: 'Lokasi majlis' },
   { id: 'rsvp', label: 'RSVP', eyebrow: 'Tempat untuk anda' },
-  { id: 'note', label: 'Pesanan', eyebrow: 'Daripada kami' },
+  { id: 'note', label: '🤍', eyebrow: 'Daripada kami' },
 ];
