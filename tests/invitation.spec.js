@@ -47,6 +47,9 @@ test('navigation, direct links, history and assets work', async ({ page }) => {
   await expect(page.locator('.sidebar')).toHaveCSS('background-color', 'rgb(229, 228, 226)');
   await expect(page.locator('.desktop-header')).toHaveText('WALIMATULURUS');
   await expect(page.locator('.couple-names')).toContainText('Anis');
+  await expect(page.locator('.venue-name')).toHaveText('Negeri Sembilan');
+  await expect(page.locator('.venue-region')).toHaveCount(0);
+  expect(await page.locator('.couple-names').evaluate(element => getComputedStyle(element).color)).toBe('rgb(115, 93, 73)');
   await expect(page.locator('.bride-name')).toHaveText('Anis');
   await expect(page.locator('.bride-initial')).toHaveCount(0);
   expect(await page.locator('.bride-name').evaluate(element => getComputedStyle(element).fontFamily)).toContain('Allura');
@@ -59,7 +62,7 @@ test('navigation, direct links, history and assets work', async ({ page }) => {
   await expect(page.locator('[data-page="invitation"][aria-current]')).toBeVisible();
   await page.locator('nav a[href="#dresscode"]').click();
   await expect(page.locator('[data-page="dresscode"][aria-current]')).toBeVisible();
-  await expect(page.locator('.dress-piece')).toHaveCount(16);
+  await expect(page.locator('.dress-piece')).toHaveCount(15);
   await page.keyboard.press('ArrowRight');
   await expect(page.locator('main')).toHaveAttribute('data-page', 'location');
   await page.goBack();
@@ -108,13 +111,16 @@ test('bride invitation uses supplied wording and preview query remains separate'
     'ke majlis walimatulurus puteri kesayangan kami bersama pasangan pilihan hatinya',
     'Anis Jamilah Jamlus&Mohd Shahizwan Mohammad Shahari',
   ]);
-  expect(await page.locator('.invitation-couple').evaluate(element => getComputedStyle(element).fontFamily)).toContain('Cormorant Garamond');
+  expect(await page.locator('.invitation-hosts').evaluate(element => getComputedStyle(element).textTransform)).toBe('uppercase');
+  expect(await page.locator('.invitation-couple').evaluate(element => getComputedStyle(element).fontFamily)).toContain('Allura');
   await expect(page.locator('.invitation-couple span')).toHaveText([
     'Anis Jamilah Jamlus',
     '&',
     'Mohd Shahizwan Mohammad Shahari',
   ]);
   await page.setViewportSize({width:390,height:844});
+  expect(await page.locator('.invitation-hosts').evaluate(element => getComputedStyle(element).textTransform)).toBe('uppercase');
+  expect(await page.locator('.invitation-couple').evaluate(element => getComputedStyle(element).fontFamily)).toContain('Allura');
   expect(await page.locator('.invitation-couple > span').evaluateAll(elements => elements.every(element => getComputedStyle(element).whiteSpace === 'nowrap'))).toBe(true);
   expect(await page.locator('.invitation-couple').evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
   await page.goto('/?invite=lelaki#home');
@@ -142,6 +148,7 @@ test('bride and groom site configs contain their own invitation copy', () => {
 test('venue and contact links use supplied values', async ({ page }) => {
   await page.goto('/#location');
   await expect(page.locator('.contact')).toHaveCount(2);
+  await expect(page.locator('.location-details')).not.toContainText('Majlis resepsi');
   await expect(page.locator('.venue-lineart')).toHaveAttribute('src', '/assets/dewan_sketch-transparent.png');
   await expect(page.locator('.venue-lineart')).toBeVisible();
   await expect(page.locator('.venue-lineart')).toHaveJSProperty('naturalWidth', 1526);
@@ -256,6 +263,8 @@ for(const width of [320,390,768,1440]) {
         expect(overlaps).toEqual([false, false, false, false, false, false]);
         const portraitWidths = await page.locator('main .memory img').evaluateAll(images => images.map(image => image.getBoundingClientRect().width));
         expect(Math.min(...portraitWidths)).toBeGreaterThan(width === 320 ? 80 : 100);
+        expect(portraitWidths[4]).toBeGreaterThan(portraitWidths[3] + 5);
+        expect(portraitWidths[5]).toBeGreaterThan(portraitWidths[3] + 5);
       }
       await expectPageInViewport(page, id);
     }

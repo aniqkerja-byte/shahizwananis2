@@ -11,11 +11,10 @@ const pieces = [
   { id: 'sampin', label: 'Sampin biru dan emas', cell: 10, side: 'men', x: 475, mobileX: 105, y: 210, size: 104, layer: 3 },
   { id: 'selendang', label: 'Selendang perang kelabu', cell: 2, side: 'women', x: 98, mobileX: 98, y: 52, size: 88, layer: 4 },
   { id: 'songkok', label: 'Songkok hitam', cell: 11, side: 'men', x: 475, mobileX: 105, y: 39, size: 65, layer: 4 },
-  { id: 'handbag', label: 'Beg tangan perang kelabu', cell: 6, side: 'women', x: 325, mobileX: 340, y: 201, size: 80, layer: 4 },
   { id: 'black-heels', label: 'Kasut wanita hitam', cell: 3, side: 'women', x: 105, mobileX: 105, y: 320, size: 76, layer: 3 },
   { id: 'brown-heels', label: 'Kasut wanita coklat', cell: 7, side: 'women', x: 265, mobileX: 285, y: 320, size: 72, layer: 3 },
   { id: 'loafers', label: 'Kasut loafer lelaki', cell: 14, side: 'men', x: 640, mobileX: 285, y: 320, size: 76, layer: 3 },
-  { id: 'capal', label: 'Capal hitam', cell: 15, side: 'men', x: 475, mobileX: 105, y: 320, size: 72, layer: 3 },
+  { id: 'covered-shoes', label: 'Kasut bertutup lelaki', cell: 14, side: 'men', x: 475, mobileX: 105, y: 320, size: 72, layer: 3 },
 ];
 
 const arrangements = new Map();

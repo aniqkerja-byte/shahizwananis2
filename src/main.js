@@ -72,9 +72,10 @@ const scrollNavigation = installScrollNavigation({
 });
 
 function homePage() {
+  const region = wedding.location.split(',').at(-1).trim();
   return `<section class="page home-page" aria-labelledby="page-title">
     <h1 id="page-title" class="couple-names" tabindex="-1"><span class="groom-name">Shahizwan</span><span class="ampersand">&</span><span class="bride-name">Anis</span></h1>
-    <div class="event-summary"><span class="eyebrow">${wedding.day}</span><p class="wedding-date"><time datetime="${wedding.dateISO}">${wedding.date}</time></p><p>${wedding.time}</p><span class="short-rule"></span><p class="venue-name">${wedding.venue}</p><p class="venue-region">${wedding.location}</p></div>
+    <div class="event-summary"><span class="eyebrow">${wedding.day}</span><p class="wedding-date"><time datetime="${wedding.dateISO}">${wedding.date}</time></p><p>${wedding.time}</p><span class="short-rule"></span><p class="venue-name">${region}</p></div>
   </section>`;
 }
 
@@ -112,7 +113,7 @@ function locationPage() {
     : inviteSide === 'lelaki'
       ? wedding.contacts.filter(contact => contact.side === 'Pihak lelaki')
       : wedding.contacts;
-  return `<section class="page location-page" aria-labelledby="page-title"><div class="section-heading"><p class="eyebrow">Lokasi majlis</p><h1 id="page-title" tabindex="-1">Jumpa anda <em>di sini.</em></h1></div><img class="venue-lineart" src="/assets/dewan-perdana-lineart.svg" alt="Lakaran garisan fasad Dewan Perdana Tampin" width="760" height="305" /><div class="location-details"><span class="eyebrow">Majlis resepsi</span><h2>${wedding.venue}</h2><p>${wedding.location}</p><p class="location-time">${wedding.date}<span>·</span>${wedding.time}</p><a class="button" href="${wedding.mapsUrl}" target="_blank" rel="noopener noreferrer">${pin}Buka Google Maps${external}</a><p class="map-caption">Carian lokasi: Dewan Perdana, Tampin</p></div><div class="contacts"><p class="eyebrow">Perlukan bantuan ke lokasi majlis?</p><div class="contact-grid" data-count="${contacts.length}">${contacts.map(c=>`<a class="contact" href="https://wa.me/${c.international}?text=${encodeURIComponent('Assalamualaikum, saya ingin bertanya tentang majlis Shahizwan & Anis pada 9 Januari 2027.')}" target="_blank" rel="noopener noreferrer"><span class="eyebrow">${c.side}</span><span class="contact-name">${c.name} ${external}</span><span class="contact-number">${c.phone} · WhatsApp</span></a>`).join('')}</div></div></section>`;
+  return `<section class="page location-page" aria-labelledby="page-title"><div class="section-heading"><p class="eyebrow">Lokasi majlis</p><h1 id="page-title" tabindex="-1">Jumpa anda <em>di sini.</em></h1></div><img class="venue-lineart" src="/assets/dewan-perdana-lineart.svg" alt="Lakaran garisan fasad Dewan Perdana Tampin" width="760" height="305" /><div class="location-details"><h2>${wedding.venue}</h2><p>${wedding.location}</p><p class="location-time">${wedding.date}<span>·</span>${wedding.time}</p><a class="button" href="${wedding.mapsUrl}" target="_blank" rel="noopener noreferrer">${pin}Buka Google Maps${external}</a><p class="map-caption">Carian lokasi: Dewan Perdana, Tampin</p></div><div class="contacts"><p class="eyebrow">Perlukan bantuan ke lokasi majlis?</p><div class="contact-grid" data-count="${contacts.length}">${contacts.map(c=>`<a class="contact" href="https://wa.me/${c.international}?text=${encodeURIComponent('Assalamualaikum, saya ingin bertanya tentang majlis Shahizwan & Anis pada 9 Januari 2027.')}" target="_blank" rel="noopener noreferrer"><span class="eyebrow">${c.side}</span><span class="contact-name">${c.name} ${external}</span><span class="contact-number">${c.phone} · WhatsApp</span></a>`).join('')}</div></div></section>`;
 }
 
 function rsvpPage() {

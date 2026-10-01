@@ -9,6 +9,10 @@ test('individual pieces drag independently, stay in bounds and reset', async ({ 
   await expect(page.locator('.dresscode-page')).toContainText('Tradisional / Smart Casual');
   await expect(page.locator('.dresscode-page')).toContainText('kecuali putih dan silver.');
   await expect(page.locator('.page-footer')).toHaveCount(0);
+  await expect(page.locator('.dress-piece')).toHaveCount(15);
+  await expect(page.getByRole('button', {name:'Beg tangan perang kelabu'})).toHaveCount(0);
+  await expect(page.getByRole('button', {name:'Capal hitam'})).toHaveCount(0);
+  await expect(page.getByRole('button', {name:'Kasut bertutup lelaki'})).toBeVisible();
   await page.emulateMedia({ reducedMotion: 'reduce' });
   const songkok = page.getByRole('button', { name: 'Songkok hitam', exact: true });
   const shirt = page.getByRole('button', { name: 'Baju Melayu biru gelap', exact: true });
@@ -80,7 +84,7 @@ test('phone tabs and touch dragging work without page swipes', async ({ page, co
   expect(after.x - before.x).toBeCloseTo(40, 0);
   expect(after.y - before.y).toBeCloseTo(70, 0);
   await page.setViewportSize({ width: 1440, height: 900 });
-  await expect.poll(() => page.locator('.dress-piece:visible').count()).toBe(16);
+  await expect.poll(() => page.locator('.dress-piece:visible').count()).toBe(15);
   const rect = await page.locator('.outfit-board').boundingBox();
   const piece = await songkok.boundingBox();
   expect(piece.x).toBeGreaterThanOrEqual(rect.x - 1);
