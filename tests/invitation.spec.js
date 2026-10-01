@@ -28,6 +28,21 @@ test('navigation, direct links, history and assets work', async ({ page }) => {
   page.on('pageerror', error => errors.push(error.message));
   await page.goto('/');
   await expect(page.locator('main')).toHaveAttribute('data-page', 'home');
+  await expect(page.locator('link[rel="icon"]')).toHaveAttribute('href', '/favicon.png');
+  const favicon = await page.request.get('/favicon.png');
+  expect(favicon.ok()).toBe(true);
+  expect(favicon.headers()['content-type']).toContain('image/png');
+  expect(await page.locator('link[rel="icon"]').evaluate(async link => {
+    const image = new Image();
+    image.src = link.href;
+    await image.decode();
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 128;
+    const context = canvas.getContext('2d');
+    context.drawImage(image, 0, 0);
+    const pixels = context.getImageData(0, 0, 128, 128).data;
+    return pixels[3] === 0 && pixels.some((channel, index) => index % 4 === 3 && channel > 200);
+  })).toBe(true);
   expect(await page.evaluate(() => getComputedStyle(document.documentElement).backgroundColor)).toBe('rgb(229, 228, 226)');
   await expect(page.locator('.sidebar')).toHaveCSS('background-color', 'rgb(229, 228, 226)');
   await expect(page.locator('.desktop-header')).toHaveText('WALIMATULURUS');
