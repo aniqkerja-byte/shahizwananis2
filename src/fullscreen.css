@@ -196,6 +196,8 @@ main {
 .invitation-copy { display: grid; justify-items: center; gap: 17px; }
 .invitation-copy p { max-width: 700px; font-size: 19px; line-height: 1.4; }
 .invitation-copy .invitation-hosts { font-size: clamp(25px, 2.6vw, 32px); line-height: 1.2; }
+.invitation-copy .invitation-hosts-stack { display: grid; justify-items: center; gap: 2px; }
+.invitation-copy .invitation-host-divider { font-size: .85em; font-style: italic; }
 .invitation-copy .invitation-address { font-size: 18px; font-style: italic; }
 .invitation-copy .invitation-couple { display: grid; justify-items: center; gap: 3px; max-width: 730px; margin-top: 4px; font-family: 'Cormorant Garamond', Georgia, serif; font-size: clamp(24px, 2.2vw, 30px); line-height: 1.12; }
 .invitation-copy .invitation-name-divider { font-size: .85em; font-style: italic; }

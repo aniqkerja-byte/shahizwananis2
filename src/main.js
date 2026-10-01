@@ -80,12 +80,16 @@ function homePage() {
 
 function invitationPage() {
   const invitation = siteConfig?.invitation ?? brideSite.invitation;
+  const hostsMarkup = Array.isArray(invitation.hosts)
+    ? `<span>${invitation.hosts[0]}</span><span class="invitation-host-divider">&amp;</span><span>${invitation.hosts[1]}</span>`
+    : invitation.hosts;
+  const hostsClass = Array.isArray(invitation.hosts) ? ' invitation-hosts-stack' : '';
   return `<section class="page invitation-page" aria-labelledby="page-title">
     <p class="bismillah" lang="ar" dir="rtl">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</p>
     <h1 id="page-title" tabindex="-1">Jemputan</h1>
     <div class="invitation-copy">
       <p>Dengan penuh kesyukuran dan rasa hormat</p>
-      <p class="invitation-hosts">${invitation.hosts}</p>
+      <p class="invitation-hosts${hostsClass}">${hostsMarkup}</p>
       <p>menjemput</p>
       <p class="invitation-address">Tan Sri / Puan Sri / Dato’ / Datin / Tuan / Puan / Encik / Cik</p>
       <p>${invitation.event}</p>

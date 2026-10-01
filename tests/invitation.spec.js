@@ -119,7 +119,7 @@ test('bride and groom site configs contain their own invitation copy', () => {
   expect(brideSite.invitation.firstName).toBe('Anis Jamilah Jamlus');
   expect(groomSite.showInvitationPage).toBe(true);
   expect(groomSite.inviteSide).toBe('lelaki');
-  expect(groomSite.invitation.hosts).toBe('Mohammad Shahari Ludin & Sariah Datok Gempa Borhan');
+  expect(groomSite.invitation.hosts).toEqual(['Mohammad Shahari Ludin', 'Sariah Datok Gempa Borhan']);
   expect(groomSite.invitation.event).toContain('putera kesayangan kami');
   expect(groomSite.invitation.firstName).toBe('Mohd Shahizwan Mohammad Shahari');
 });
