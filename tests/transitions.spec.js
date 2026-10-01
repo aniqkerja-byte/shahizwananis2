@@ -24,6 +24,18 @@ test('horizontal transition handles interrupted navigation without stale pages o
   expect(errors).toEqual([]);
 });
 
+test('dresscode sketch filter stays attached in the outgoing transition layer', async ({ page }) => {
+  await page.goto('/#dresscode');
+  await expect(page.locator('.filter-defs filter#dresscode-sketch')).toHaveCount(1);
+  await page.locator('nav a[href="#location"]').click();
+  const outgoing = page.locator('.site-transition-old');
+  await expect(outgoing).toHaveCount(1);
+  await expect(outgoing.locator('.filter-defs filter#dresscode-sketch')).toHaveCount(1);
+  const filter = await outgoing.locator('.piece-art').first().evaluate(element => getComputedStyle(element).filter);
+  expect(filter).toContain('dresscode-sketch');
+  await expect(page.locator('main')).toHaveAttribute('data-page', 'location');
+});
+
 test('reduced motion and resize settle a transition with the correct destination', async ({ page }) => {
   await page.goto('/');
   await page.locator('nav a[href="#note"]').click();

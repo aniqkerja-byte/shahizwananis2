@@ -37,7 +37,11 @@ export function createPageTransitions(container) {
     layer.setAttribute('aria-hidden', 'true');
     layer.inert = true;
     layer.querySelector('#page-announcement')?.remove();
-    layer.querySelectorAll('[id]').forEach(element => element.removeAttribute('id'));
+    layer.querySelectorAll('[id]').forEach(element => {
+      // SVG filters are referenced by URL from CSS and need their IDs in the visual clone.
+      if (element.matches('svg filter')) return;
+      element.removeAttribute('id');
+    });
     layer.querySelectorAll('a').forEach(link => {
       link.removeAttribute('href');
       link.removeAttribute('data-page');
