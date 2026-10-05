@@ -28,6 +28,8 @@ test('navigation, direct links, history and assets work', async ({ page }) => {
   page.on('pageerror', error => errors.push(error.message));
   await page.goto('/');
   await expect(page.locator('main')).toHaveAttribute('data-page', 'home');
+  await expect(page.locator('.home-flower')).toHaveAttribute('src', '/assets/home-flowers.svg');
+  await expect(page.locator('.home-flower')).toHaveAttribute('alt', '');
   await expect(page.locator('link[rel="icon"]')).toHaveAttribute('href', '/favicon.png');
   const favicon = await page.request.get('/favicon.png');
   expect(favicon.ok()).toBe(true);
@@ -49,8 +51,8 @@ test('navigation, direct links, history and assets work', async ({ page }) => {
   await expect(page.locator('.couple-names')).toContainText('Anis');
   await expect(page.locator('.venue-name')).toHaveText('Negeri Sembilan');
   await expect(page.locator('.venue-region')).toHaveCount(0);
-  expect(await page.locator('.couple-names').evaluate(element => getComputedStyle(element).color)).toBe('rgb(115, 93, 73)');
-  await expect(page.locator('.bride-name')).toHaveText('Anis');
+  expect(await page.locator('.couple-names').evaluate(element => getComputedStyle(element).color)).toBe('rgb(45, 86, 138)');
+  await expect(page.locator('.bride-name')).toHaveText('Anis Jamilah');
   await expect(page.locator('.bride-initial')).toHaveCount(0);
   expect(await page.locator('.bride-name').evaluate(element => getComputedStyle(element).fontFamily)).toContain('Allura');
   await expect(page.locator('.full-names')).toHaveCount(0);
@@ -81,13 +83,13 @@ test('navigation, direct links, history and assets work', async ({ page }) => {
     'Dalam setiap doa dan restu yang diterima, kami dipertemukan dan ditakdirkan sampai ke sini. Our takdir has always been cared for and guided in the most beautiful ways through you.',
     'Terima kasih daripada kami untuk semua doa-doa yang baik. Terima kasih sudi luangkan masa untuk raikan kami. Semoga hari kita nanti diberkati dan jadi satu memori yang indah untuk semua.',
     'Jumpa nanti, we can’t wait to see you!',
-    '🤍 Shahizwan & Anis',
+    '🤍 Shahizwan & Anis Jamilah',
   ]);
   await expect(page.locator('.memory figcaption')).toHaveCount(0);
   await expect(page.locator('.memory img')).toHaveCount(6);
   await expect(page.locator('.memory img').first()).toHaveAttribute('src', '/assets/croped/shah1-trim.png');
   expect(await page.locator('.memory img').evaluateAll(images => images.map(image => image.getAttribute('src').split('/').pop()))).toEqual([
-    'shah1-trim.png', 'anis1-trim.png', 'shah2-trim.png', 'anis2-trim.png', 'shah3-trim.png', 'anis3-trim.png',
+    'shah1-trim.png', 'anis1-trim.png', 'shah2-trim.png', 'anis2-trim.png', 'shah3baru-trim.png', 'anis3baru-trim.png',
   ]);
   await page.locator('.memory-6').scrollIntoViewIfNeeded();
   await expect.poll(()=>page.locator('main img').evaluateAll(imgs=>imgs.every(img=>img.complete && img.naturalWidth>0))).toBe(true);
@@ -103,25 +105,30 @@ test('bride invitation uses supplied wording and preview query remains separate'
   await expect(page.locator('.bismillah')).toHaveText('بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ');
   await expect(page.locator('.bismillah')).toHaveAttribute('dir', 'rtl');
   await expect(page.locator('#page-title')).toHaveText('Jemputan');
+  await expect(page.locator('#page-title')).toHaveClass(/sr-only/);
   await expect(page.locator('.invitation-copy p')).toHaveText([
     'Dengan penuh kesyukuran dan rasa hormat',
-    "Dato' Ir. Jamlus Aziz & Datin Hamidah Mansor",
+    "Dato' Ir. Jamlus Aziz&Datin Hamidah Mansor",
     'menjemput',
     'Tan Sri / Puan Sri / Dato’ / Datin / Tuan / Puan / Encik / Cik',
     'ke majlis walimatulurus puteri kesayangan kami bersama pasangan pilihan hatinya',
-    'Anis Jamilah Jamlus&Mohd Shahizwan Mohammad Shahari',
+    'Mohd Shahizwan Mohammad Shahari&Anis Jamilah Jamlus',
   ]);
   expect(await page.locator('.invitation-hosts').evaluate(element => getComputedStyle(element).textTransform)).toBe('uppercase');
-  expect(await page.locator('.invitation-couple').evaluate(element => getComputedStyle(element).fontFamily)).toContain('Allura');
+  expect(await page.locator('.invitation-name-bride').evaluate(element => getComputedStyle(element).fontFamily)).toContain('Allura');
+  expect(await page.locator('.invitation-name-groom').evaluate(element => getComputedStyle(element).fontFamily)).toContain('Great Vibes');
   await expect(page.locator('.invitation-couple span')).toHaveText([
-    'Anis Jamilah Jamlus',
-    '&',
     'Mohd Shahizwan Mohammad Shahari',
+    '&',
+    'Anis Jamilah Jamlus',
   ]);
   await page.setViewportSize({width:390,height:844});
   expect(await page.locator('.invitation-hosts').evaluate(element => getComputedStyle(element).textTransform)).toBe('uppercase');
-  expect(await page.locator('.invitation-couple').evaluate(element => getComputedStyle(element).fontFamily)).toContain('Allura');
+  expect(await page.locator('.invitation-name-bride').evaluate(element => getComputedStyle(element).fontFamily)).toContain('Allura');
+  expect(await page.locator('.invitation-name-groom').evaluate(element => getComputedStyle(element).fontFamily)).toContain('Great Vibes');
   expect(await page.locator('.invitation-couple > span').evaluateAll(elements => elements.every(element => getComputedStyle(element).whiteSpace === 'nowrap'))).toBe(true);
+  expect(await page.locator('.invitation-couple').evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+  await page.setViewportSize({width:320,height:844});
   expect(await page.locator('.invitation-couple').evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
   await page.goto('/?invite=lelaki#home');
   await expect(page.locator('nav a[href="#invitation"]')).toHaveCount(0);
@@ -135,14 +142,20 @@ test('bride invitation uses supplied wording and preview query remains separate'
 
 test('bride and groom site configs contain their own invitation copy', () => {
   expect(brideSite.showInvitationPage).toBe(true);
-  expect(brideSite.invitation.hosts).toBe("Dato' Ir. Jamlus Aziz & Datin Hamidah Mansor");
+  expect(brideSite.invitation.hosts).toEqual(["Dato' Ir. Jamlus Aziz", 'Datin Hamidah Mansor']);
   expect(brideSite.invitation.event).toContain('puteri kesayangan kami');
-  expect(brideSite.invitation.firstName).toBe('Anis Jamilah Jamlus');
+  expect(brideSite.invitation.firstName).toBe('Mohd Shahizwan Mohammad Shahari');
+  expect(brideSite.invitation.firstNameRole).toBe('groom');
+  expect(brideSite.invitation.secondName).toBe('Anis Jamilah Jamlus');
+  expect(brideSite.invitation.secondNameRole).toBe('bride');
   expect(groomSite.showInvitationPage).toBe(true);
   expect(groomSite.inviteSide).toBe('lelaki');
   expect(groomSite.invitation.hosts).toEqual(['Mohammad Shahari Ludin', 'Sariah Datok Gempa Borhan']);
-  expect(groomSite.invitation.event).toContain('putera kesayangan kami');
+  expect(groomSite.invitation.event).toBe('ke majlis walimatulurus putera kesayangan kami bersama pasangan pilihan hatinya');
   expect(groomSite.invitation.firstName).toBe('Mohd Shahizwan Mohammad Shahari');
+  expect(groomSite.invitation.firstNameRole).toBe('groom');
+  expect(groomSite.invitation.secondName).toBe('Anis Jamilah Jamlus');
+  expect(groomSite.invitation.secondNameRole).toBe('bride');
 });
 
 test('venue and contact links use supplied values', async ({ page }) => {
@@ -263,8 +276,15 @@ for(const width of [320,390,768,1440]) {
         expect(overlaps).toEqual([false, false, false, false, false, false]);
         const portraitWidths = await page.locator('main .memory img').evaluateAll(images => images.map(image => image.getBoundingClientRect().width));
         expect(Math.min(...portraitWidths)).toBeGreaterThan(width === 320 ? 80 : 100);
-        expect(portraitWidths[4]).toBeGreaterThan(portraitWidths[3] + 5);
-        expect(portraitWidths[5]).toBeGreaterThan(portraitWidths[3] + 5);
+        expect(Math.abs(portraitWidths[4] - portraitWidths[1])).toBeLessThan(3);
+        expect(Math.abs(portraitWidths[5] - portraitWidths[1])).toBeLessThan(3);
+        expect(await page.locator('main .memory-6').evaluate(element => getComputedStyle(element).maskImage)).toBe('none');
+        const lowerPhotoGap = await page.evaluate(() => {
+          const middle = document.querySelector('main .memory-5').getBoundingClientRect();
+          const right = document.querySelector('main .memory-6').getBoundingClientRect();
+          return right.left - middle.right;
+        });
+        expect(lowerPhotoGap).toBeGreaterThan(0);
       }
       await expectPageInViewport(page, id);
     }

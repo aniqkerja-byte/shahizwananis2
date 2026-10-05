@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --host 127.0.0.1",
+    "dev": "vite --host 127.0.0.1 --mode groom",
+    "dev:preview": "vite --host 127.0.0.1",
     "build": "npm run build:groom && npm run build:bride",
     "build:groom": "vite build --mode groom --outDir dist/groom",
     "build:bride": "vite build --mode bride --outDir dist/bride",

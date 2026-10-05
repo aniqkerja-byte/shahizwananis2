@@ -74,7 +74,8 @@ const scrollNavigation = installScrollNavigation({
 function homePage() {
   const region = wedding.location.split(',').at(-1).trim();
   return `<section class="page home-page" aria-labelledby="page-title">
-    <h1 id="page-title" class="couple-names" tabindex="-1"><span class="groom-name">Shahizwan</span><span class="ampersand">&</span><span class="bride-name">Anis</span></h1>
+    <img class="home-flower" src="/assets/home-flowers.svg" alt="" aria-hidden="true" width="180" height="200" />
+    <h1 id="page-title" class="couple-names" tabindex="-1"><span class="groom-name">Shahizwan</span><span class="ampersand">&</span><span class="bride-name">Anis Jamilah</span></h1>
     <div class="event-summary"><span class="eyebrow">${wedding.day}</span><p class="wedding-date"><time datetime="${wedding.dateISO}">${wedding.date}</time></p><p>${wedding.time}</p><span class="short-rule"></span><p class="venue-name">${region}</p></div>
   </section>`;
 }
@@ -85,16 +86,18 @@ function invitationPage() {
     ? `<span>${invitation.hosts[0]}</span><span class="invitation-host-divider">&amp;</span><span>${invitation.hosts[1]}</span>`
     : invitation.hosts;
   const hostsClass = Array.isArray(invitation.hosts) ? ' invitation-hosts-stack' : '';
+  const firstNameClass = `invitation-couple-name invitation-name-${invitation.firstNameRole}`;
+  const secondNameClass = `invitation-couple-name invitation-name-${invitation.secondNameRole}`;
   return `<section class="page invitation-page" aria-labelledby="page-title">
     <p class="bismillah" lang="ar" dir="rtl">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</p>
-    <h1 id="page-title" tabindex="-1">Jemputan</h1>
+    <h1 id="page-title" class="sr-only" tabindex="-1">Jemputan</h1>
     <div class="invitation-copy">
       <p>Dengan penuh kesyukuran dan rasa hormat</p>
       <p class="invitation-hosts${hostsClass}">${hostsMarkup}</p>
       <p>menjemput</p>
       <p class="invitation-address">Tan Sri / Puan Sri / Dato’ / Datin / Tuan / Puan / Encik / Cik</p>
       <p>${invitation.event}</p>
-      <p class="invitation-couple"><span>${invitation.firstName}</span><span class="invitation-name-divider">&amp;</span><span>${invitation.secondName}</span></p>
+      <p class="invitation-couple"><span class="${firstNameClass}">${invitation.firstName}</span><span class="invitation-name-divider">&amp;</span><span class="${secondNameClass}">${invitation.secondName}</span></p>
     </div>
   </section>`;
 }
@@ -130,8 +133,8 @@ function confirmationPage() {
 }
 
 function notePage() {
-  const photos = ['shah1','anis1','shah2','anis2','shah3','anis3'];
-  return `<section class="page note-page" aria-labelledby="page-title"><h1 id="page-title" class="sr-only" tabindex="-1">Pesanan</h1><div class="scrapbook"><article class="letter">${wedding.closing.map(p=>`<p>${p}</p>`).join('')}<p class="letter-signoff">🤍 Shahizwan & Anis</p></article><div class="memory-photos">${photos.map((photo,i)=>`<figure class="memory memory-${i+1}"><img src="/assets/croped/${photo}-trim.png" alt="Kenangan zaman kecil ${photo.startsWith('shah') ? 'Shahizwan' : 'Anis'}, foto ${photo.at(-1)}" loading="lazy"/></figure>`).join('')}</div></div></section>`;
+  const photos = ['shah1','anis1','shah2','anis2','shah3baru','anis3baru'];
+  return `<section class="page note-page" aria-labelledby="page-title"><h1 id="page-title" class="sr-only" tabindex="-1">Pesanan</h1><div class="scrapbook"><article class="letter">${wedding.closing.map(p=>`<p>${p}</p>`).join('')}<p class="letter-signoff">🤍 Shahizwan & Anis Jamilah</p></article><div class="memory-photos">${photos.map((photo,i)=>`<figure class="memory memory-${i+1}"><img src="/assets/croped/${photo}-trim.png" alt="Kenangan zaman kecil ${photo.startsWith('shah') ? 'Shahizwan' : 'Anis'}, foto ${i%3+1}" loading="lazy"/></figure>`).join('')}</div></div></section>`;
 }
 
 const templates = { home: homePage, invitation: invitationPage, dresscode: dresscodePage, location: locationPage, rsvp: rsvpPage, note: notePage };
