@@ -115,7 +115,7 @@ test('bride invitation uses supplied wording and preview query remains separate'
     'Mohd Shahizwan Mohammad Shahari&Anis Jamilah Jamlus',
   ]);
   expect(await page.locator('.invitation-hosts').evaluate(element => getComputedStyle(element).textTransform)).toBe('uppercase');
-  expect(await page.locator('.invitation-name-bride').evaluate(element => getComputedStyle(element).fontFamily)).toContain('Allura');
+  expect(await page.locator('.invitation-name-bride').evaluate(element => getComputedStyle(element).fontFamily)).toContain('Great Vibes');
   expect(await page.locator('.invitation-name-groom').evaluate(element => getComputedStyle(element).fontFamily)).toContain('Great Vibes');
   await expect(page.locator('.invitation-couple span')).toHaveText([
     'Mohd Shahizwan Mohammad Shahari',
@@ -124,7 +124,7 @@ test('bride invitation uses supplied wording and preview query remains separate'
   ]);
   await page.setViewportSize({width:390,height:844});
   expect(await page.locator('.invitation-hosts').evaluate(element => getComputedStyle(element).textTransform)).toBe('uppercase');
-  expect(await page.locator('.invitation-name-bride').evaluate(element => getComputedStyle(element).fontFamily)).toContain('Allura');
+  expect(await page.locator('.invitation-name-bride').evaluate(element => getComputedStyle(element).fontFamily)).toContain('Great Vibes');
   expect(await page.locator('.invitation-name-groom').evaluate(element => getComputedStyle(element).fontFamily)).toContain('Great Vibes');
   expect(await page.locator('.invitation-couple > span').evaluateAll(elements => elements.every(element => getComputedStyle(element).whiteSpace === 'nowrap'))).toBe(true);
   expect(await page.locator('.invitation-couple').evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
