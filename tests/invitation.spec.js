@@ -117,7 +117,7 @@ test('bride invitation uses supplied wording and preview query remains separate'
   expect(await page.locator('.invitation-hosts').evaluate(element => getComputedStyle(element).textTransform)).toBe('uppercase');
   expect(await page.locator('.invitation-name-bride').evaluate(element => getComputedStyle(element).fontFamily)).toContain('Great Vibes');
   expect(await page.locator('.invitation-name-groom').evaluate(element => getComputedStyle(element).fontFamily)).toContain('Great Vibes');
-  await expect(page.locator('.invitation-couple span')).toHaveText([
+  await expect(page.locator('.invitation-couple > span')).toHaveText([
     'Mohd Shahizwan Mohammad Shahari',
     '&',
     'Anis Jamilah Jamlus',

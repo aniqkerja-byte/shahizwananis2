@@ -88,6 +88,9 @@ function invitationPage() {
   const hostsClass = Array.isArray(invitation.hosts) ? ' invitation-hosts-stack' : '';
   const firstNameClass = `invitation-couple-name invitation-name-${invitation.firstNameRole}`;
   const secondNameClass = `invitation-couple-name invitation-name-${invitation.secondNameRole}`;
+  const renderName = (name, role) => role === 'bride' && name.startsWith('A')
+    ? `<span class="invitation-bride-initial">A</span>${name.slice(1)}`
+    : name;
   return `<section class="page invitation-page" aria-labelledby="page-title">
     <p class="bismillah" lang="ar" dir="rtl">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</p>
     <h1 id="page-title" class="sr-only" tabindex="-1">Jemputan</h1>
@@ -97,7 +100,7 @@ function invitationPage() {
       <p>menjemput</p>
       <p class="invitation-address">Tan Sri / Puan Sri / Dato’ / Datin / Tuan / Puan / Encik / Cik</p>
       <p>${invitation.event}</p>
-      <p class="invitation-couple"><span class="${firstNameClass}">${invitation.firstName}</span><span class="invitation-name-divider">&amp;</span><span class="${secondNameClass}">${invitation.secondName}</span></p>
+      <p class="invitation-couple"><span class="${firstNameClass}">${renderName(invitation.firstName, invitation.firstNameRole)}</span><span class="invitation-name-divider">&amp;</span><span class="${secondNameClass}">${renderName(invitation.secondName, invitation.secondNameRole)}</span></p>
     </div>
   </section>`;
 }
