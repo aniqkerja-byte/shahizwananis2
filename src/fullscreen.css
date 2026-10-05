@@ -27,10 +27,10 @@ main {
   transform: scale(var(--page-scale, 1));
   transform-origin: center top;
 }
-.couple-names .bride-name { grid-column: 3; justify-self: start; margin: 0; font-family: 'Allura', var(--script), cursive; font-size: 1.25em; line-height: 1; white-space: nowrap; }
+.couple-names .bride-name { grid-column: 3; justify-self: start; margin-left: 25px; font-family: 'Allura', var(--script), cursive; font-size: 1.25em; line-height: 1; white-space: nowrap; }
 .couple-names .groom-name { grid-column: 1 / 4; font-family: var(--script); font-size: 1em; }
-.couple-names .ampersand { grid-column: 2; justify-self: center; align-self: center; margin: 0; font-size: .7em; line-height: 1; }
-.couple-names { grid-template-columns: 1fr 45px 1fr; max-width: 655px; color: #2d568a; }
+.couple-names .ampersand { grid-column: 2; justify-self: center; align-self: center; margin: 0; font-size: .55em; line-height: 1; }
+.couple-names { grid-template-columns: 1fr 45px 1fr; color: #2d568a; }
 .home-flower { display: block; width: clamp(96px, 8.5vw, 124px); height: auto; margin: 0 auto -6px; }
 .sidebar.is-open { max-height: calc(100dvh - 90px); overflow-y: auto; }
 
@@ -124,9 +124,12 @@ main {
   .rsvp-signoff { margin-top: 18px; }
 }
 
-.couple-names { max-width: 655px; font-size: clamp(52px, 5.4vw, 104px); }
 @media (max-width: 767px) {
-  .couple-names { grid-template-columns: 1fr 28px 1fr; max-width: 340px; font-size: clamp(30px, 9vw, 46px); }
+  .couple-names { grid-template-columns: 1fr 28px 1fr; }
+  .couple-names .bride-name { margin-left: 0; }
+}
+@media (max-width: 360px) {
+  .couple-names { font-size: 56px; }
 }
 
 /* Unframed childhood portraits surround the letter without obscuring its copy. */
