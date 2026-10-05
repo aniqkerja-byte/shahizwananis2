@@ -89,7 +89,7 @@ test('navigation, direct links, history and assets work', async ({ page }) => {
   await expect(page.locator('.memory img')).toHaveCount(6);
   await expect(page.locator('.memory img').first()).toHaveAttribute('src', '/assets/croped/shah1-trim.png');
   expect(await page.locator('.memory img').evaluateAll(images => images.map(image => image.getAttribute('src').split('/').pop()))).toEqual([
-    'shah1-trim.png', 'anis1-trim.png', 'shah2-trim.png', 'anis2-trim.png', 'shah3baru-trim.png', 'anis3baru-trim.png',
+    'shah1-trim.png', 'anis3baru-trim.png', 'shah2-trim.png', 'anis2-trim.png', 'shah3baru-trim.png', 'anis1-trim.png',
   ]);
   await page.locator('.memory-6').scrollIntoViewIfNeeded();
   await expect.poll(()=>page.locator('main img').evaluateAll(imgs=>imgs.every(img=>img.complete && img.naturalWidth>0))).toBe(true);
@@ -268,7 +268,7 @@ for(const width of [320,390,768,1440]) {
       if (id === 'note' && width <= 767) {
         const overlaps = await page.evaluate(() => {
           const text = [...document.querySelectorAll('main .letter p')].map(element => element.getBoundingClientRect());
-          return [...document.querySelectorAll('main .memory img')].map(image => {
+          return [...document.querySelectorAll('main .memory')].map(image => {
             const box = image.getBoundingClientRect();
             return text.some(line => box.left < line.right && box.right > line.left && box.top < line.bottom && box.bottom > line.top);
           });
@@ -276,8 +276,8 @@ for(const width of [320,390,768,1440]) {
         expect(overlaps).toEqual([false, false, false, false, false, false]);
         const portraitWidths = await page.locator('main .memory img').evaluateAll(images => images.map(image => image.getBoundingClientRect().width));
         expect(Math.min(...portraitWidths)).toBeGreaterThan(width === 320 ? 80 : 100);
-        expect(Math.abs(portraitWidths[4] - portraitWidths[1])).toBeLessThan(3);
-        expect(Math.abs(portraitWidths[5] - portraitWidths[1])).toBeLessThan(3);
+        expect(portraitWidths[4]).toBeGreaterThan(portraitWidths[3] * 1.08);
+        expect(Math.abs(portraitWidths[5] - portraitWidths[3])).toBeLessThan(3);
         expect(await page.locator('main .memory-6').evaluate(element => getComputedStyle(element).maskImage)).toBe('none');
         const lowerPhotoGap = await page.evaluate(() => {
           const middle = document.querySelector('main .memory-5').getBoundingClientRect();
@@ -380,7 +380,7 @@ test('short-screen content scales and one downward scroll opens the next page', 
   await expect(page.locator('main')).toHaveAttribute('data-page', 'note');
   await expectPageInViewport(page, 'note');
   const clearances = await page.evaluate(() => {
-    const portraits = [...document.querySelectorAll('main .memory img')].map(image => image.getBoundingClientRect());
+    const portraits = [...document.querySelectorAll('main .memory')].map(image => image.getBoundingClientRect());
     const paragraphs = [...document.querySelectorAll('main .letter p')].map(text => text.getBoundingClientRect());
     const header = document.querySelector('.mobile-header').getBoundingClientRect();
     const main = document.querySelector('#main').getBoundingClientRect();
@@ -405,15 +405,27 @@ test('scroll does not navigate from form controls or an open menu', async ({ pag
   await expect(page.locator('main')).toHaveAttribute('data-page', 'rsvp');
 });
 
-test('touch swipe changes pages and vertical keyboard navigation works', async ({ page, context }) => {
+test('horizontal swipes navigate both ways while vertical swipes stay on the page', async ({ page, context }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/#dresscode');
   const cdp = await context.newCDPSession(page);
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: 200, y: 740 }] });
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: 200, y: 700 }] });
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  await expect(page.locator('main')).toHaveAttribute('data-page', 'dresscode');
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: 280, y: 740 }] });
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: 170, y: 740 }] });
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
   await expect(page.locator('main')).toHaveAttribute('data-page', 'location');
   await page.waitForTimeout(700);
-  await page.keyboard.press('PageUp');
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: 100, y: 740 }] });
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: 210, y: 740 }] });
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  await expect(page.locator('main')).toHaveAttribute('data-page', 'dresscode');
+  await page.waitForTimeout(700);
+  await page.keyboard.press('ArrowRight');
+  await expect(page.locator('main')).toHaveAttribute('data-page', 'location');
+  await page.waitForTimeout(700);
+  await page.keyboard.press('ArrowLeft');
   await expect(page.locator('main')).toHaveAttribute('data-page', 'dresscode');
 });

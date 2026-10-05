@@ -119,7 +119,7 @@ function locationPage() {
     : inviteSide === 'lelaki'
       ? wedding.contacts.filter(contact => contact.side === 'Pihak lelaki')
       : wedding.contacts;
-  return `<section class="page location-page" aria-labelledby="page-title"><div class="section-heading"><p class="eyebrow">Lokasi majlis</p><h1 id="page-title" tabindex="-1">Jumpa anda <em>di sini.</em></h1></div><img class="venue-lineart" src="/assets/dewan-perdana-lineart.svg" alt="Lakaran garisan fasad Dewan Perdana Tampin" width="760" height="305" /><div class="location-details"><h2>${wedding.venue}</h2><p>${wedding.location}</p><p class="location-time">${wedding.date}<span>·</span>${wedding.time}</p><a class="button" href="${wedding.mapsUrl}" target="_blank" rel="noopener noreferrer">${pin}Buka Google Maps${external}</a><p class="map-caption">Carian lokasi: Dewan Perdana, Tampin</p></div><div class="contacts"><p class="eyebrow">Perlukan bantuan ke lokasi majlis?</p><div class="contact-grid" data-count="${contacts.length}">${contacts.map(c=>`<a class="contact" href="https://wa.me/${c.international}?text=${encodeURIComponent('Assalamualaikum, saya ingin bertanya tentang majlis Shahizwan & Anis pada 9 Januari 2027.')}" target="_blank" rel="noopener noreferrer"><span class="eyebrow">${c.side}</span><span class="contact-name">${c.name} ${external}</span><span class="contact-number">${c.phone} · WhatsApp</span></a>`).join('')}</div></div></section>`;
+  return `<section class="page location-page" aria-labelledby="page-title"><div class="section-heading"><p class="eyebrow">Lokasi majlis</p><h1 id="page-title" class="sr-only" tabindex="-1">Lokasi majlis</h1></div><img class="venue-lineart" src="/assets/dewan-perdana-lineart.svg" alt="Lakaran garisan fasad Dewan Perdana Tampin" width="760" height="305" /><div class="location-details"><h2>${wedding.venue}</h2><p>${wedding.location}</p><p class="location-time">${wedding.date}<span>·</span>${wedding.time}</p><a class="button" href="${wedding.mapsUrl}" target="_blank" rel="noopener noreferrer">${pin}Buka Google Maps${external}</a><p class="map-caption">Carian lokasi: Dewan Perdana, Tampin</p></div><div class="contacts"><p class="eyebrow">Perlukan bantuan ke lokasi majlis?</p><div class="contact-grid" data-count="${contacts.length}">${contacts.map(c=>`<a class="contact" href="https://wa.me/${c.international}?text=${encodeURIComponent('Assalamualaikum, saya ingin bertanya tentang majlis Shahizwan & Anis pada 9 Januari 2027.')}" target="_blank" rel="noopener noreferrer"><span class="eyebrow">${c.side}</span><span class="contact-name">${c.name} ${external}</span><span class="contact-number">${c.phone} · WhatsApp</span></a>`).join('')}</div></div></section>`;
 }
 
 function rsvpPage() {
@@ -136,8 +136,11 @@ function confirmationPage() {
 }
 
 function notePage() {
-  const photos = ['shah1','anis1','shah2','anis2','shah3baru','anis3baru'];
-  return `<section class="page note-page" aria-labelledby="page-title"><h1 id="page-title" class="sr-only" tabindex="-1">Pesanan</h1><div class="scrapbook"><article class="letter">${wedding.closing.map(p=>`<p>${p}</p>`).join('')}<p class="letter-signoff">🤍 Shahizwan & Anis Jamilah</p></article><div class="memory-photos">${photos.map((photo,i)=>`<figure class="memory memory-${i+1}"><img src="/assets/croped/${photo}-trim.png" alt="Kenangan zaman kecil ${photo.startsWith('shah') ? 'Shahizwan' : 'Anis'}, foto ${i%3+1}" loading="lazy"/></figure>`).join('')}</div></div></section>`;
+  const photos = ['shah1','anis3baru','shah2','anis2','shah3baru','anis1'];
+  const mobilePortrait = photo => photo === 'anis3baru'
+    ? '<source media="(max-width: 767px)" srcset="/assets/croped/anis3baru-clean.png" />'
+    : '';
+  return `<section class="page note-page" aria-labelledby="page-title"><h1 id="page-title" class="sr-only" tabindex="-1">Pesanan</h1><div class="scrapbook"><article class="letter">${wedding.closing.map(p=>`<p>${p}</p>`).join('')}<p class="letter-signoff">🤍 Shahizwan & Anis Jamilah</p></article><div class="memory-photos">${photos.map((photo,i)=>`<figure class="memory memory-${i+1} memory-${photo}"><picture>${mobilePortrait(photo)}<img src="/assets/croped/${photo}-trim.png" alt="Kenangan zaman kecil ${photo.startsWith('shah') ? 'Shahizwan' : 'Anis'}, foto ${i%3+1}" loading="lazy"/></picture></figure>`).join('')}</div></div></section>`;
 }
 
 const templates = { home: homePage, invitation: invitationPage, dresscode: dresscodePage, location: locationPage, rsvp: rsvpPage, note: notePage };

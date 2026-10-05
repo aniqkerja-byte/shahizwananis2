@@ -58,7 +58,7 @@ export function installScrollNavigation({ container, navigate, menuIsOpen }) {
     if (!touch || event.touches.length !== 1) { touch = null; return; }
     const dy = touch.y - event.touches[0].clientY;
     const dx = touch.x - event.touches[0].clientX;
-    if (Math.abs(dy) > Math.abs(dx)) {
+    if (Math.abs(dx) > Math.abs(dy)) {
       event.preventDefault();
     }
   }, { passive: false });
@@ -68,16 +68,16 @@ export function installScrollNavigation({ container, navigate, menuIsOpen }) {
     if (!gesture || !event.changedTouches.length || event.touches.length || menuIsOpen()) return;
     const dy = gesture.y - event.changedTouches[0].clientY;
     const dx = gesture.x - event.changedTouches[0].clientX;
-    if (Math.abs(dy) < 36 || Math.abs(dy) <= Math.abs(dx)) return;
-    changePage(Math.sign(dy));
+    if (Math.abs(dx) < 36 || Math.abs(dx) <= Math.abs(dy)) return;
+    changePage(Math.sign(dx));
   }, { passive: true });
   window.addEventListener('touchcancel', () => { touch = null; }, { passive: true });
 
   window.addEventListener('keydown', event => {
     if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey ||
         isControl(event.target) || event.target.closest('a') || menuIsOpen()) return;
-    const direction = ['ArrowDown', 'PageDown', ' '].includes(event.key) ? 1
-      : ['ArrowUp', 'PageUp'].includes(event.key) ? -1 : 0;
+    const direction = ['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(event.key) ? 1
+      : ['ArrowLeft', 'ArrowUp', 'PageUp'].includes(event.key) ? -1 : 0;
     if (!direction) return;
     event.preventDefault();
     changePage(direction);
