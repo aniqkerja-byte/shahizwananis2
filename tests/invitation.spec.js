@@ -52,7 +52,7 @@ test('navigation, direct links, history and assets work', async ({ page }) => {
   await expect(page.locator('.venue-name')).toHaveText('Negeri Sembilan');
   await expect(page.locator('.venue-region')).toHaveCount(0);
   expect(await page.locator('.couple-names').evaluate(element => getComputedStyle(element).color)).toBe('rgb(45, 86, 138)');
-  await expect(page.locator('.bride-name')).toHaveText('Anis Jamilah');
+  await expect(page.locator('.bride-name')).toHaveText('Anis');
   await expect(page.locator('.bride-initial')).toHaveCount(0);
   expect(await page.locator('.bride-name').evaluate(element => getComputedStyle(element).fontFamily)).toContain('Allura');
   await expect(page.locator('.full-names')).toHaveCount(0);

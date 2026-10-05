@@ -75,7 +75,7 @@ function homePage() {
   const region = wedding.location.split(',').at(-1).trim();
   return `<section class="page home-page" aria-labelledby="page-title">
     <img class="home-flower" src="/assets/home-flowers.svg" alt="" aria-hidden="true" width="180" height="200" />
-    <h1 id="page-title" class="couple-names" tabindex="-1"><span class="groom-name">Shahizwan</span><span class="ampersand">&</span><span class="bride-name">Anis Jamilah</span></h1>
+    <h1 id="page-title" class="couple-names" tabindex="-1"><span class="groom-name">Shahizwan</span><span class="ampersand">&</span><span class="bride-name">Anis</span></h1>
     <div class="event-summary"><span class="eyebrow">${wedding.day}</span><p class="wedding-date"><time datetime="${wedding.dateISO}">${wedding.date}</time></p><p>${wedding.time}</p><span class="short-rule"></span><p class="venue-name">${region}</p></div>
   </section>`;
 }
