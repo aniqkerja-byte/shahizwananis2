@@ -42,7 +42,7 @@ Scroll or swipe to change pages. Each page fills one viewport without internal s
 
 Page changes use the reference video's direction-aware horizontal push/reveal followed by staggered content fades. The controller is in `src/page-transitions.js`; it settles safely when navigation is interrupted, the viewport changes, or reduced-motion is enabled.
 
-The Dresscode page has 16 independently draggable garment/accessory pieces. Drag with mouse or touch, use arrow keys on a focused piece, or press Reset to restore the arrangement. On phones, switch between Wanita and Lelaki. Interaction code is in `src/dresscode.js`; the artwork is `public/assets/dresscode-pieces.png`.
+The Event Details page retains the #dresscode route and presents the dress code, Atur Cara schedule and Hidangan menu. Desktop and phones stack Atur Cara above Hidangan in a vertically scrollable page. Swipe left/right or use the left/right arrow keys to change pages. When the page overflows, vertical wheel and keyboard input scroll its content without leaving the page. Content is in src/content.js and styling is in src/event-details.css. Original dresscode artwork remains in public/assets for reference.
 
 ## Preview perkongsian pautan
 

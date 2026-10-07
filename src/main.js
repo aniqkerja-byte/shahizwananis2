@@ -7,12 +7,12 @@ import '@fontsource/dm-sans/latin-400.css';
 import '@fontsource/dm-sans/latin-500.css';
 import './styles.css';
 import './fullscreen.css';
-import './dresscode.css';
+import './event-details.css';
+import './location.css';
 import { pages as allPages, wedding } from './content.js';
 import { brideSite, siteConfig } from './config/index.js';
 import { submitRsvp, validateRsvp } from './rsvp.js';
 import { installScrollNavigation } from './scroll-navigation.js';
-import { dresscodeBoard, bindDresscode } from './dresscode.js';
 import { createPageTransitions } from './page-transitions.js';
 
 const pages = (siteConfig ? !siteConfig.showInvitationPage : new URLSearchParams(location.search).get('invite') === 'lelaki')
@@ -45,13 +45,16 @@ const pageTransitions = createPageTransitions(main);
 let activeIndex = 0;
 let draft = { name: '', attendance: '', pax: '1' };
 let confirmation = null;
-let cleanupPage = () => {};
 let fitFrame = 0;
 
 function fitActivePage() {
   const page = main.querySelector('.page');
   if (!page || !main.clientHeight) return;
   page.style.setProperty('--page-scale', '1');
+  if (page.hasAttribute('data-page-scroll')) {
+    page.style.height = `${main.clientHeight}px`;
+    return;
+  }
   const scale = Math.min(1, Math.max(0, (main.clientHeight - 8) / page.offsetHeight));
   page.style.setProperty('--page-scale', scale.toFixed(4));
 }
@@ -62,7 +65,7 @@ function queueFitActivePage() {
 }
 const scrollNavigation = installScrollNavigation({
   container: main,
-  menuIsOpen: () => document.querySelector('.menu-toggle').getAttribute('aria-expanded') === 'true' || Boolean(main.querySelector('.outfit-board.is-dragging')),
+  menuIsOpen: () => document.querySelector('.menu-toggle').getAttribute('aria-expanded') === 'true',
   navigate: direction => {
     const next = activeIndex + direction;
     if (next < 0 || next >= pages.length) return false;
@@ -74,7 +77,7 @@ const scrollNavigation = installScrollNavigation({
 function homePage() {
   const region = wedding.location.split(',').at(-1).trim();
   return `<section class="page home-page" aria-labelledby="page-title">
-    <img class="home-flower" src="/assets/home-flowers.svg" alt="" aria-hidden="true" width="180" height="200" />
+    <img class="home-flower" src="/assets/home-flowers-organic.svg" alt="" aria-hidden="true" width="180" height="200" />
     <h1 id="page-title" class="couple-names" tabindex="-1"><span class="groom-name">Shahizwan</span><span class="ampersand">&</span><span class="bride-name">Anis</span></h1>
     <div class="event-summary"><span class="eyebrow">${wedding.day}</span><p class="wedding-date"><time datetime="${wedding.dateISO}">${wedding.date}</time></p><p>${wedding.time}</p><span class="short-rule"></span><p class="venue-name">${region}</p></div>
   </section>`;
@@ -105,10 +108,25 @@ function invitationPage() {
   </section>`;
 }
 
-function dresscodePage() {
-  return `<section class="page dresscode-page" aria-labelledby="page-title"><h1 id="page-title" class="sr-only" tabindex="-1">Dresscode</h1><p class="dresscode-style">Tradisional / Smart Casual</p>
-    ${dresscodeBoard()}
-    <p class="dresscode-note">Apa sahaja warna pilihan anda, <strong>kecuali putih dan silver.</strong></p>
+function eventDetailsPage() {
+  const details = wedding.eventDetails;
+  const timelineIcons = [
+    '<circle cx="8" cy="6" r="2"/><circle cx="16" cy="7" r="2"/><path d="M3 19v-6c0-4 10-4 10 0v6M14 11c3-1 7 1 7 4v4M6 19v-4m4 4v-4m7 4v-4"/>',
+    '<path d="m12 3 3 6 6 1-4 5 1 6-6-3-6 3 1-6-4-5 6-1Z"/>',
+    '<circle cx="8" cy="13" r="5"/><circle cx="16" cy="13" r="5"/><path d="m14 4 2-2 2 2-2 3Z"/>',
+    '<circle cx="13" cy="12" r="7"/><path d="M2 3v5c0 2 4 2 4 0V3M4 3v18M21 3v18M21 3c-3 2-3 7 0 8"/>',
+  ];
+  return `<section class="page event-details-page" data-page-scroll tabindex="0" aria-labelledby="page-title">
+    <div class="event-details-content">
+      <h1 id="page-title" tabindex="-1">Event Details</h1>
+      <div class="event-dress-code"><p>${details.dressCode}</p><p>${details.dressCodeNote}</p></div>
+      <div class="event-details-columns">
+        <section class="event-schedule" aria-labelledby="schedule-title"><h2 id="schedule-title">Atur Cara</h2>
+          <dl class="event-timeline">${details.schedule.map((item, index) => `<div class="event-schedule-entry"><dt><span class="event-timeline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">${timelineIcons[index]}</svg></span>${item.time}</dt><dd>${item.title}${item.activities ? `<ul>${item.activities.map(activity => `<li>${activity}</li>`).join('')}</ul>` : ''}</dd></div>`).join('')}</dl>
+        </section>
+        <section class="event-menu" aria-labelledby="menu-title"><h2 id="menu-title">Hidangan</h2><dl class="event-menu-courses">${details.menu.map(course => `<div class="event-menu-course"><dt>${course.category}</dt><dd>${course.items.map(item => `<p>${item}</p>`).join('')}</dd></div>`).join('')}</dl></section>
+      </div>
+    </div>
   </section>`;
 }
 
@@ -119,7 +137,16 @@ function locationPage() {
     : inviteSide === 'lelaki'
       ? wedding.contacts.filter(contact => contact.side === 'Pihak lelaki')
       : wedding.contacts;
-  return `<section class="page location-page" aria-labelledby="page-title"><div class="section-heading"><p class="eyebrow">Lokasi majlis</p><h1 id="page-title" class="sr-only" tabindex="-1">Lokasi majlis</h1></div><img class="venue-lineart" src="/assets/dewan-perdana-lineart.svg" alt="Lakaran garisan fasad Dewan Perdana Tampin" width="760" height="305" /><div class="location-details"><h2>${wedding.venue}</h2><p>${wedding.location}</p><p class="location-time">${wedding.date}<span>·</span>${wedding.time}</p><a class="button" href="${wedding.mapsUrl}" target="_blank" rel="noopener noreferrer">${pin}Buka Google Maps${external}</a><p class="map-caption">Carian lokasi: Dewan Perdana, Tampin</p></div><div class="contacts"><p class="eyebrow">Perlukan bantuan ke lokasi majlis?</p><div class="contact-grid" data-count="${contacts.length}">${contacts.map(c=>`<a class="contact" href="https://wa.me/${c.international}?text=${encodeURIComponent('Assalamualaikum, saya ingin bertanya tentang majlis Shahizwan & Anis pada 9 Januari 2027.')}" target="_blank" rel="noopener noreferrer"><span class="eyebrow">${c.side}</span><span class="contact-name">${c.name} ${external}</span><span class="contact-number">${c.phone} · WhatsApp</span></a>`).join('')}</div></div></section>`;
+  return `<section class="page location-page" data-page-scroll tabindex="0" aria-labelledby="page-title">
+    <div class="location-content">
+      <div class="section-heading"><p class="eyebrow">Lokasi majlis</p><h1 id="page-title" class="sr-only" tabindex="-1">Lokasi majlis</h1></div>
+      <img class="venue-lineart" src="/assets/dewan-perdana-lineart.svg" alt="Lakaran garisan fasad Dewan Perdana Tampin" width="760" height="305" />
+      <div class="location-details"><h2>${wedding.venue}</h2><p>${wedding.location}</p><p class="location-time">${wedding.date}<span>·</span>${wedding.time}</p><a class="button" href="${wedding.mapsUrl}" target="_blank" rel="noopener noreferrer">${pin}Buka Google Maps${external}</a><p class="map-caption">Carian lokasi: Dewan Perdana, Tampin</p></div>
+      <div class="contacts"><h2 class="assistance-heading">${wedding.assistanceHeading}</h2><div class="contact-grid" data-count="${contacts.length}">${contacts.map(c=>`<a class="contact" href="https://wa.me/${c.international}?text=${encodeURIComponent('Assalamualaikum, saya ingin bertanya tentang majlis Shahizwan & Anis pada 9 Januari 2027.')}" target="_blank" rel="noopener noreferrer"><span class="contact-name">${c.name} ${external}</span><span class="contact-number">${c.phone} · WhatsApp</span></a>`).join('')}</div></div>
+      <aside class="parking-note" aria-label="Tempat Letak Kenderaan"><strong>Tempat Letak Kenderaan:</strong> ${wedding.parkingNote}</aside>
+    </div>
+  </section>`;
+
 }
 
 function rsvpPage() {
@@ -143,7 +170,7 @@ function notePage() {
   return `<section class="page note-page" aria-labelledby="page-title"><h1 id="page-title" class="sr-only" tabindex="-1">Pesanan</h1><div class="scrapbook"><article class="letter">${wedding.closing.map(p=>`<p>${p}</p>`).join('')}<p class="letter-signoff">🤍 Shahizwan & Anis Jamilah</p></article><div class="memory-photos">${photos.map((photo,i)=>`<figure class="memory memory-${i+1} memory-${photo}"><picture>${mobilePortrait(photo)}<img src="/assets/croped/${photo}-trim.png" alt="Kenangan zaman kecil ${photo.startsWith('shah') ? 'Shahizwan' : 'Anis'}, foto ${i%3+1}" loading="lazy"/></picture></figure>`).join('')}</div></div></section>`;
 }
 
-const templates = { home: homePage, invitation: invitationPage, dresscode: dresscodePage, location: locationPage, rsvp: rsvpPage, note: notePage };
+const templates = { home: homePage, invitation: invitationPage, dresscode: eventDetailsPage, location: locationPage, rsvp: rsvpPage, note: notePage };
 function setMenu(open) {
   document.querySelector('.menu-toggle').setAttribute('aria-expanded', String(open));
   document.querySelector('.menu-toggle').setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
@@ -164,8 +191,6 @@ function renderPage({ focus = false, immediate = false } = {}) {
 }
 
 function commitPage({ focus = false } = {}) {
-  cleanupPage();
-  cleanupPage = () => {};
   const hash = location.hash.slice(1);
   activeIndex = Math.max(0, pages.findIndex(p=>p.id===hash));
   if (hash && !pages.some(p=>p.id===hash)) history.replaceState(null, '', '#home');
@@ -187,7 +212,6 @@ function commitPage({ focus = false } = {}) {
   window.scrollTo({ top: 0, behavior: 'instant' });
   if (focus) scrollNavigation.reset();
   if (page.id === 'rsvp') bindRsvp();
-  if (page.id === 'dresscode') cleanupPage = bindDresscode();
   main.querySelectorAll('img').forEach(image => image.addEventListener('load', queueFitActivePage, { once: true }));
   fitActivePage();
   queueFitActivePage();

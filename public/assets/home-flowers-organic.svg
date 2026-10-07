@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="200" viewBox="0 0 180 200" fill="none" stroke="#16223c" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+<title>Two hand-drawn daisies</title>
+<g id="stems">
+<path stroke-width="1.85" d="M73 104 C79 121 87 143 88 159 C89 173 89 184 89 191"/>
+<path stroke-width="1.5" d="M115 67 C110 86 114 105 104 126 C94 146 94 171 94 191"/>
+<path stroke-width="1.35" d="M99 139 C108 125 118 119 130 116 C127 128 113 138 99 139Z"/>
+<path stroke-width="1.1" d="M101 138 C110 131 119 123 127 119"/>
+</g>
+<g id="daisy-large" transform="translate(68 86) rotate(-24) scale(1.08 0.88)">
+<path stroke-width="1.7" transform="rotate(0)" d="M-3 -6 C-9 -13 -9 -43 -2 -39 C5 -38 9 -15 3 -6"/>
+<path stroke-width="1.5" transform="rotate(31)" d="M-3 -6 C-10 -13 -6 -39 2 -35 C10 -34 10 -15 3 -6"/>
+<path stroke-width="1.9" transform="rotate(62)" d="M-3 -6 C-10 -13 -9 -40 -1 -36 C7 -35 10 -15 3 -6"/>
+<path stroke-width="1.6" transform="rotate(95)" d="M-3 -6 C-11 -13 -7 -36 2 -32 C11 -31 11 -15 3 -6"/>
+<path stroke-width="1.75" transform="rotate(128)" d="M-3 -6 C-9 -13 -9 -41 -2 -37 C5 -36 9 -15 3 -6"/>
+<path stroke-width="1.5" transform="rotate(163)" d="M-3 -6 C-10 -13 -7 -38 1 -34 C9 -33 10 -15 3 -6"/>
+<path stroke-width="1.8" transform="rotate(195)" d="M-3 -6 C-9 -13 -5 -42 2 -38 C9 -37 9 -15 3 -6"/>
+<path stroke-width="1.6" transform="rotate(229)" d="M-3 -6 C-10 -13 -10 -39 -2 -35 C6 -34 10 -15 3 -6"/>
+<path stroke-width="1.85" transform="rotate(261)" d="M-3 -6 C-9 -13 -6 -44 1 -40 C8 -39 9 -15 3 -6"/>
+<path stroke-width="1.5" transform="rotate(293)" d="M-3 -6 C-10 -13 -9 -40 -1 -36 C7 -35 10 -15 3 -6"/>
+<path stroke-width="1.7" transform="rotate(327)" d="M-3 -6 C-9 -13 -5 -42 2 -38 C9 -37 9 -15 3 -6"/>
+<path stroke-width="1.8" d="M-8 -3 C-6 -9 5 -10 9 -4 C12 1 6 8 0 8 C-6 9 -11 3 -8 -3Z"/>
+<path stroke-width="2.5" d="M-7 1 Q-6 5 -3 6 M5 -5 L8 -2 M1 6 L4 5"/>
+<path stroke-width="1.15" d="M-3 -3 L-2 -1 M3 -2 L4 0 M0 2 L1 3"/>
+<path fill="#16223c" stroke="none" d="M-6 9 Q0 7 6 9 L3 14 Q0 11 -3 14Z"/>
+</g>
+<g id="daisy-small" transform="translate(117 49) rotate(18) scale(0.8 0.7)">
+<path stroke-width="1.7" transform="rotate(2)" d="M-3 -6 C-8 -13 -5 -35 1 -31 C7 -30 8 -15 3 -6"/>
+<path stroke-width="1.9" transform="rotate(38)" d="M-3 -6 C-8 -13 -8 -34 -2 -30 C4 -29 8 -15 3 -6"/>
+<path stroke-width="1.65" transform="rotate(74)" d="M-3 -6 C-9 -13 -6 -39 1 -35 C8 -34 9 -15 3 -6"/>
+<path stroke-width="1.8" transform="rotate(112)" d="M-3 -6 C-8 -13 -7 -34 -1 -30 C5 -29 8 -15 3 -6"/>
+<path stroke-width="1.6" transform="rotate(149)" d="M-3 -6 C-9 -13 -5 -37 2 -33 C9 -32 9 -15 3 -6"/>
+<path stroke-width="1.9" transform="rotate(185)" d="M-3 -6 C-8 -13 -7 -33 -1 -29 C5 -28 8 -15 3 -6"/>
+<path stroke-width="1.7" transform="rotate(220)" d="M-3 -6 C-8 -13 -5 -38 1 -34 C7 -33 8 -15 3 -6"/>
+<path stroke-width="1.8" transform="rotate(256)" d="M-3 -6 C-9 -13 -9 -35 -2 -31 C5 -30 9 -15 3 -6"/>
+<path stroke-width="1.6" transform="rotate(290)" d="M-3 -6 C-8 -13 -5 -38 1 -34 C7 -33 8 -15 3 -6"/>
+<path stroke-width="1.85" transform="rotate(327)" d="M-3 -6 C-9 -13 -8 -34 -1 -30 C6 -29 9 -15 3 -6"/>
+<path stroke-width="1.8" d="M-8 -3 C-6 -9 5 -10 9 -4 C12 1 6 8 0 8 C-6 9 -11 3 -8 -3Z"/>
+<path stroke-width="2.5" d="M-7 1 Q-6 5 -3 6 M5 -5 L8 -2 M1 6 L4 5"/>
+<path stroke-width="1.15" d="M-3 -3 L-2 -1 M3 -2 L4 0 M0 2 L1 3"/>
+<path fill="#16223c" stroke="none" d="M-6 9 Q0 7 6 9 L3 14 Q0 11 -3 14Z"/>
+</g>
+</svg>

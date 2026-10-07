@@ -24,16 +24,23 @@ test('horizontal transition handles interrupted navigation without stale pages o
   expect(errors).toEqual([]);
 });
 
-test('dresscode sketch filter stays attached in the outgoing transition layer', async ({ page }) => {
+test('outgoing Event Details preserves its scroll position and reentry starts at the top', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 600 });
   await page.goto('/#dresscode');
-  await expect(page.locator('.filter-defs filter#dresscode-sketch')).toHaveCount(1);
-  await page.locator('nav a[href="#location"]').click();
+  await expect(page.locator('main')).not.toHaveAttribute('data-transitioning');
+  const offset = await page.locator('main [data-page-scroll]').evaluate(element => {
+    element.scrollTop = 200;
+    return element.scrollTop;
+  });
+  expect(offset).toBeGreaterThan(0);
+  await page.evaluate(() => { location.hash = 'location'; });
   const outgoing = page.locator('.site-transition-old');
   await expect(outgoing).toHaveCount(1);
-  await expect(outgoing.locator('.filter-defs filter#dresscode-sketch')).toHaveCount(1);
-  const filter = await outgoing.locator('.piece-art').first().evaluate(element => getComputedStyle(element).filter);
-  expect(filter).toContain('dresscode-sketch');
+  expect(await outgoing.locator('[data-page-scroll]').evaluate(element => element.scrollTop)).toBe(offset);
   await expect(page.locator('main')).toHaveAttribute('data-page', 'location');
+  await page.evaluate(() => { location.hash = 'dresscode'; });
+  await expect(page.locator('main')).toHaveAttribute('data-page', 'dresscode');
+  expect(await page.locator('main [data-page-scroll]').evaluate(element => element.scrollTop)).toBe(0);
 });
 
 test('reduced motion and resize settle a transition with the correct destination', async ({ page }) => {

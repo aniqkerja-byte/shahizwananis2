@@ -28,7 +28,7 @@ test('navigation, direct links, history and assets work', async ({ page }) => {
   page.on('pageerror', error => errors.push(error.message));
   await page.goto('/');
   await expect(page.locator('main')).toHaveAttribute('data-page', 'home');
-  await expect(page.locator('.home-flower')).toHaveAttribute('src', '/assets/home-flowers.svg');
+  await expect(page.locator('.home-flower')).toHaveAttribute('src', '/assets/home-flowers-organic.svg');
   await expect(page.locator('.home-flower')).toHaveAttribute('alt', '');
   await expect(page.locator('link[rel="icon"]')).toHaveAttribute('href', '/favicon.png');
   const favicon = await page.request.get('/favicon.png');
@@ -57,14 +57,14 @@ test('navigation, direct links, history and assets work', async ({ page }) => {
   expect(await page.locator('.bride-name').evaluate(element => getComputedStyle(element).fontFamily)).toContain('Allura');
   await expect(page.locator('.full-names')).toHaveCount(0);
   await expect(page.locator('.home-intro, .parents, .home-rsvp, .sidebar-bottom, .mobile-date')).toHaveCount(0);
-  await expect(page.locator('nav')).toContainText('Dresscode');
+  await expect(page.locator('nav')).toContainText('Event Details');
   await expect(page.locator('nav')).toContainText('Jemputan');
   await expect(page.locator('nav')).toContainText('🤍');
   await page.locator('nav a[href="#invitation"]').click();
   await expect(page.locator('[data-page="invitation"][aria-current]')).toBeVisible();
   await page.locator('nav a[href="#dresscode"]').click();
   await expect(page.locator('[data-page="dresscode"][aria-current]')).toBeVisible();
-  await expect(page.locator('.dress-piece')).toHaveCount(15);
+  await expect(page.locator('.dress-piece')).toHaveCount(0);
   await page.keyboard.press('ArrowRight');
   await expect(page.locator('main')).toHaveAttribute('data-page', 'location');
   await page.goBack();
@@ -81,7 +81,7 @@ test('navigation, direct links, history and assets work', async ({ page }) => {
   await expect(page.locator('.letter p')).toHaveText([
     'This day would not feel complete without you. Your doa, your prayers, your restu have made this day happen.',
     'Dalam setiap doa dan restu yang diterima, kami dipertemukan dan ditakdirkan sampai ke sini. Our takdir has always been cared for and guided in the most beautiful ways through you.',
-    'Terima kasih daripada kami untuk semua doa-doa yang baik. Terima kasih sudi luangkan masa untuk raikan kami. Semoga hari kita nanti diberkati dan jadi satu memori yang indah untuk semua.',
+    'Terima kasih daripada kami untuk semua doa-doa yang baik. Terima kasih sudi luangkan masa untuk raikan kami. Semoga hari kita nanti diberkati dan menjadi satu memori yang indah untuk semua.',
     'Jumpa nanti, we can’t wait to see you!',
     '🤍 Shahizwan & Anis Jamilah',
   ]);

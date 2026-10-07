@@ -71,10 +71,6 @@ main {
   .short-rule { margin: 12px auto; }
   .parents { margin-top: 19px; }
   .home-rsvp { margin-top: 14px; }
-  .dresscode-playground { max-width: clamp(460px, calc((100dvh - 470px) * 2), 680px); margin-top: 10px; }
-  .outfits { height: min(32dvh, 280px); width: auto; max-height: none; margin: auto; }
-  .palette { margin-top: 12px; }
-  .dresscode-note { margin-top: 12px; }
   .venue-lineart { width: min(100%, 310px); margin: 16px auto 12px; }
   .location-time { margin: 14px 0 18px !important; }
   .contacts { margin-top: 23px; padding-top: 18px; }
@@ -118,8 +114,7 @@ main {
   .short-rule { margin: 12px auto; }
   .parents { margin-top: 20px; }
   .home-rsvp { margin-top: 15px; }
-  .dresscode-page, .location-page, .rsvp-page { padding: 22px 0; }
-  .dresscode-playground { margin-top: 8px; }
+  .location-page, .rsvp-page { padding: 22px 0; }
   .rsvp-page form { margin-top: 23px; }
   .rsvp-signoff { margin-top: 18px; }
 }

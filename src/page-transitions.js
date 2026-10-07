@@ -7,6 +7,7 @@ export function createPageTransitions(container) {
   let revision = 0;
   let oldLayer = null;
   let newLayer = null;
+  const scrollOffsets = new WeakMap();
 
   function clear() {
     revision++;
@@ -56,6 +57,7 @@ export function createPageTransitions(container) {
       visualMain.innerHTML = clonedMain.innerHTML;
       clonedMain.replaceWith(visualMain);
     }
+    scrollOffsets.set(layer, [...root.querySelectorAll('[data-page-scroll]')].map(element => element.scrollTop));
     return layer;
   }
 
@@ -98,6 +100,11 @@ export function createPageTransitions(container) {
 
     newLayer = makeLayer('new');
     document.body.append(oldLayer, newLayer);
+    for (const layer of [oldLayer, newLayer]) {
+      layer.querySelectorAll('[data-page-scroll]').forEach((element, index) => {
+        element.scrollTop = scrollOffsets.get(layer)[index] || 0;
+      });
+    }
     container.dataset.transitioning = 'true';
     const newPage = newLayer.querySelector('.page');
     const startX = direction * 100;

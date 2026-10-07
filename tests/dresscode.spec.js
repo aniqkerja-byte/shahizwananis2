@@ -1,108 +1,89 @@
 import { test, expect } from '@playwright/test';
+import { wedding } from '../src/content.js';
 
-test('individual pieces drag independently, stay in bounds and reset', async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
+test('Event Details retains the old link and shows all client content without sketches', async ({ page }) => {
   await page.goto('/#dresscode');
-  await expect(page.locator('.dresscode-page')).not.toContainText('Inspirasi gaya');
-  await expect(page.locator('.dresscode-page')).not.toContainText('Untuk wanita');
-  await expect(page.locator('.dresscode-page')).not.toContainText('Pilihan warna inspirasi');
-  await expect(page.locator('.dresscode-page')).toContainText('Tradisional / Smart Casual');
-  await expect(page.locator('.dresscode-page')).toContainText('kecuali putih dan silver.');
-  await expect(page.locator('.page-footer')).toHaveCount(0);
-  await expect(page.locator('.dress-piece')).toHaveCount(15);
-  await expect(page.getByRole('button', {name:'Beg tangan perang kelabu'})).toHaveCount(0);
-  await expect(page.getByRole('button', {name:'Capal hitam'})).toHaveCount(0);
-  await expect(page.getByRole('button', {name:'Kasut bertutup lelaki'})).toBeVisible();
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  const songkok = page.getByRole('button', { name: 'Songkok hitam', exact: true });
-  const shirt = page.getByRole('button', { name: 'Baju Melayu biru gelap', exact: true });
-  const start = await songkok.boundingBox();
-  const shirtStart = await shirt.boundingBox();
-  await songkok.hover();
-  await page.mouse.down();
-  await page.mouse.move(start.x + start.width / 2 + 70, start.y + start.height / 2 + 45, { steps: 10 });
-  await page.mouse.wheel(0, 250);
-  await expect(page.locator('main')).toHaveAttribute('data-page', 'dresscode');
-  await page.mouse.up();
-  const moved = await songkok.boundingBox();
-  expect(moved.x - start.x).toBeCloseTo(70, 0);
-  expect(moved.y - start.y).toBeCloseTo(45, 0);
-  expect((await shirt.boundingBox()).x).toBeCloseTo(shirtStart.x);
-  const savedLeft = await songkok.evaluate(el => el.style.left);
-  await page.locator('nav a[href="#location"]').click();
-  await page.locator('nav a[href="#dresscode"]').click();
-  expect(await songkok.evaluate(el => el.style.left)).toBe(savedLeft);
-  await songkok.hover();
-  await page.mouse.down();
-  await page.mouse.move(1439, 899, { steps: 10 });
-  await page.mouse.up();
-  const board = await page.locator('.outfit-board').boundingBox();
-  const edge = await songkok.boundingBox();
-  expect(edge.x + edge.width).toBeLessThanOrEqual(board.x + board.width + 1);
-  expect(edge.y + edge.height).toBeLessThanOrEqual(board.y + board.height + 1);
-  await songkok.focus();
-  await page.keyboard.press('Escape');
-  expect((await songkok.boundingBox()).x).toBeCloseTo(start.x, 0);
-  expect((await songkok.boundingBox()).y).toBeCloseTo(start.y, 0);
+  await expect(page.locator('main #page-title')).toHaveText('Event Details');
+  await expect(page).toHaveTitle('Event Details · Shahizwan & Anis');
+  await expect(page.locator('nav a[href="#dresscode"]')).toContainText('Event Details');
+  await expect(page.locator('.event-dress-code p')).toHaveText([wedding.eventDetails.dressCode, wedding.eventDetails.dressCodeNote]);
+  await expect(page.locator('.event-schedule dt')).toHaveText(wedding.eventDetails.schedule.map(item => item.time));
+  await expect(page.locator('.event-schedule dd')).toHaveText(['Jemputan', 'Tetamu Khas', 'PengantinDoaSalam RestuPotong Kek', 'Jamuan']);
+  await expect(page.locator('.event-menu dt')).toHaveText(wedding.eventDetails.menu.map(course => course.category));
+  await expect(page.locator('.event-menu dd p')).toHaveText(wedding.eventDetails.menu.flatMap(course => course.items));
+  await expect(page.locator('.dress-piece, .outfit-board, .outfit-tabs, .filter-defs')).toHaveCount(0);
 });
 
-test('keyboard moves a piece without changing page and Escape restores it', async ({ page }) => {
-  await page.goto('/#dresscode');
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  const scarf = page.getByRole('button', { name: 'Selendang perang kelabu', exact: true });
-  await scarf.focus();
-  const initial = await scarf.boundingBox();
-  await page.keyboard.press('ArrowRight');
-  await page.keyboard.press('Shift+ArrowDown');
-  const moved = await scarf.boundingBox();
-  const scale = Number(await page.locator('.page').evaluate(el => getComputedStyle(el).getPropertyValue('--page-scale')));
-  expect(moved.x - initial.x).toBeCloseTo(8 * scale, 0);
-  expect(moved.y - initial.y).toBeCloseTo(24 * scale, 0);
-  await expect(page.locator('main')).toHaveAttribute('data-page', 'dresscode');
-  await page.keyboard.press('Escape');
-  expect((await scarf.boundingBox()).x).toBeCloseTo(initial.x, 0);
-});
-
-test('phone tabs and touch dragging work without page swipes', async ({ page, context }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/#dresscode');
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  await expect(page.getByRole('button', { name: 'Selendang perang kelabu', exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'Lelaki', exact: true }).click();
-  const songkok = page.getByRole('button', { name: 'Songkok hitam', exact: true });
-  await expect(songkok).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Selendang perang kelabu', exact: true })).toBeHidden();
-  const before = await songkok.boundingBox();
-  const x = before.x + before.width / 2;
-  const y = before.y + before.height / 2;
-  const cdp = await context.newCDPSession(page);
-  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] });
-  await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x + 40, y: y + 70 }] });
-  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
-  await expect(page.locator('main')).toHaveAttribute('data-page', 'dresscode');
-  const after = await songkok.boundingBox();
-  expect(after.x - before.x).toBeCloseTo(40, 0);
-  expect(after.y - before.y).toBeCloseTo(70, 0);
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await expect.poll(() => page.locator('.dress-piece:visible').count()).toBe(15);
-  const rect = await page.locator('.outfit-board').boundingBox();
-  const piece = await songkok.boundingBox();
-  expect(piece.x).toBeGreaterThanOrEqual(rect.x - 1);
-  expect(piece.x + piece.width).toBeLessThanOrEqual(rect.x + rect.width + 1);
-});
-
-test('transparent garment atlas is available', async ({ page }) => {
-  await page.goto('/#dresscode');
-  const info = await page.evaluate(async () => {
-    const image = new Image();
-    image.src = '/assets/dresscode-pieces.png';
-    await image.decode();
-    const canvas = document.createElement('canvas');
-    canvas.width = canvas.height = 1;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(image, 0, 0);
-    return { width: image.naturalWidth, alpha: ctx.getImageData(0, 0, 1, 1).data[3] };
+for (const viewport of [{ width: 1440, height: 900 }, { width: 1366, height: 768 }, { width: 390, height: 844 }, { width: 320, height: 640 }]) {
+  test('Event Details responsive layout at ' + viewport.width, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    await page.goto('/#dresscode');
+    await page.evaluate(() => document.fonts.ready);
+    await expect(page.locator('main')).not.toHaveAttribute('data-transitioning');
+    const layout = await page.locator('main .event-details-page').evaluate(el => {
+      const schedule = el.querySelector('.event-schedule').getBoundingClientRect();
+      const menu = el.querySelector('.event-menu').getBoundingClientRect();
+      return { scheduleTop: schedule.top, scheduleBottom: schedule.bottom, menuTop: menu.top, menuLeft: menu.left, scheduleRight: schedule.right, scale: el.style.getPropertyValue('--page-scale'), horizontalOverflow: el.scrollWidth > el.clientWidth, scheduleSize: getComputedStyle(el.querySelector('.event-schedule')).fontSize };
+    });
+    expect(layout.scale).toBe('1');
+    expect(layout.horizontalOverflow).toBe(false);
+    const sides = await page.locator('.event-timeline').evaluate(el => {
+      const center = el.getBoundingClientRect().left + el.getBoundingClientRect().width / 2;
+      return [...el.querySelectorAll('dt')].map(dt => {
+        const box = dt.getBoundingClientRect();
+        return box.right < center ? 'left' : box.left > center ? 'right' : 'overlap';
+      });
+    });
+    expect(sides).toEqual(['left', 'right', 'left', 'right']);
+    const iconSides = await page.locator('.event-timeline').evaluate(el => {
+      const center = el.getBoundingClientRect().left + el.getBoundingClientRect().width / 2;
+      return [...el.querySelectorAll('.event-timeline-icon')].map(icon => {
+        const box = icon.getBoundingClientRect();
+        return box.right < center ? 'left' : box.left > center ? 'right' : 'overlap';
+      });
+    });
+    expect(iconSides).toEqual(['left', 'right', 'left', 'right']);
+    expect(layout.menuTop).toBeGreaterThan(layout.scheduleBottom);
+    if (viewport.width < 768) {
+      expect(layout.scheduleSize).toBe('16px');
+    }
+    await page.locator('main [data-page-scroll]').evaluate(el => { el.scrollTop = el.scrollHeight; });
+    await expect(page.getByText('Sejuk, panas & air mineral', { exact: true })).toBeInViewport();
   });
-  expect(info.width).toBeGreaterThan(1000);
-  expect(info.alpha).toBe(0);
+}
+
+test('vertical scrolling stays in Event Details at both ends; horizontal navigation still works', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 600 });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/#dresscode');
+  const region = page.locator('main [data-page-scroll]');
+  await region.hover();
+  await page.mouse.wheel(0, 350);
+  await expect.poll(() => region.evaluate(el => el.scrollTop)).toBeGreaterThan(0);
+  await expect(page.locator('main')).toHaveAttribute('data-page', 'dresscode');
+  await region.evaluate(el => { el.scrollTop = el.scrollHeight; });
+  await page.mouse.wheel(0, 400);
+  await expect(page.locator('main')).toHaveAttribute('data-page', 'dresscode');
+  await region.focus();
+  await page.keyboard.press('PageUp');
+  await expect.poll(() => region.evaluate(el => el.scrollTop < el.scrollHeight - el.clientHeight)).toBe(true);
+  await region.evaluate(el => { el.scrollTop = 0; });
+  await page.mouse.wheel(0, -400);
+  await expect(page.locator('main')).toHaveAttribute('data-page', 'dresscode');
+  await page.keyboard.press('ArrowRight');
+  await expect(page.locator('main')).toHaveAttribute('data-page', 'location');
+});
+
+test('native vertical touch scroll reveals the menu and does not switch pages', async ({ page, context }) => {
+  await page.setViewportSize({ width: 390, height: 600 });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/#dresscode');
+  const cdp = await context.newCDPSession(page);
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: 200, y: 450 }] });
+  for (const y of [400, 340, 280, 220, 150]) {
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: 200, y }] });
+  }
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  await expect.poll(() => page.locator('main [data-page-scroll]').evaluate(el => el.scrollTop)).toBeGreaterThan(0);
+  await expect(page.locator('main')).toHaveAttribute('data-page', 'dresscode');
 });

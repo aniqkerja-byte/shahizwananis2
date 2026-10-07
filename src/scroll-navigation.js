@@ -10,6 +10,10 @@ export function installScrollNavigation({ container, navigate, menuIsOpen }) {
 
   const isControl = target => target instanceof Element &&
     Boolean(target.closest('input, textarea, select, button, [contenteditable="true"]'));
+  const overflowingPage = () => {
+    const page = container.querySelector('[data-page-scroll]');
+    return page && page.scrollHeight > page.clientHeight + 1 ? page : null;
+  };
   const changePage = direction => {
     if (performance.now() < blockedUntil) return;
     if (navigate(direction)) blockedUntil = performance.now() + transitionTime;
@@ -17,6 +21,12 @@ export function installScrollNavigation({ container, navigate, menuIsOpen }) {
 
   window.addEventListener('wheel', event => {
     if (event.ctrlKey || event.metaKey || Math.abs(event.deltaX) >= Math.abs(event.deltaY) || menuIsOpen()) return;
+    if (overflowingPage() && container.contains(event.target)) {
+      total = 0;
+      consumed = true;
+      lastWheel = performance.now();
+      return;
+    }
     const now = performance.now();
     if (now - lastWheel > gestureGap) {
       total = 0;
@@ -76,6 +86,7 @@ export function installScrollNavigation({ container, navigate, menuIsOpen }) {
   window.addEventListener('keydown', event => {
     if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey ||
         isControl(event.target) || event.target.closest('a') || menuIsOpen()) return;
+    if (overflowingPage() && ['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', ' ', 'Home', 'End'].includes(event.key)) return;
     const direction = ['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(event.key) ? 1
       : ['ArrowLeft', 'ArrowUp', 'PageUp'].includes(event.key) ? -1 : 0;
     if (!direction) return;

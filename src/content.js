@@ -9,6 +9,8 @@ export const wedding = {
   venue: 'Dewan Perdana',
   location: 'Tampin, Negeri Sembilan',
   mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Dewan%20Perdana%2C%20Tampin%2C%20Negeri%20Sembilan',
+  assistanceHeading: 'Untuk Sebarang Bantuan / Pertanyaan Berkaitan Majlis',
+  parkingNote: 'Sila ikut arahan anggota RELA yang bertugas. Tempat letak kenderaan di dalam kawasan Dewan Perdana adalah sangat terhad dan hanya untuk menurunkan penumpang. Tempat letak kenderaan disediakan berhampiran dan bersebelahan dengan Dewan Perdana.',
   parents: {
     groom: ['Mohammad Shahari Ludin', 'Sariah Datok Gempa Borhan'],
     bride: ["Dato’ Ir. Jamlus Aziz", 'Datin Hamidah Mansor'],
@@ -18,10 +20,27 @@ export const wedding = {
     { name: 'Azfar Jamil', side: 'Pihak perempuan', phone: '019 276 7122', international: '60192767122' },
     { name: 'Wan', side: 'Pihak lelaki', phone: '011 2992 2304', international: '601129922304' },
   ],
+  eventDetails: {
+    dressCode: 'Tradisional / Smart Casual',
+    dressCodeNote: 'Semua warna kecuali putih & silver.',
+    schedule: [
+      { time: '11:00 a.m.', title: 'Jemputan' },
+      { time: '12:20 p.m.', title: 'Tetamu Khas' },
+      { time: '12:30 p.m.', title: 'Pengantin', activities: ['Doa', 'Salam Restu', 'Potong Kek'] },
+      { time: '11:00 a.m. – 4:30 p.m.', title: 'Jamuan' },
+    ],
+    menu: [
+      { category: 'Utama', items: ['Biryani daging & nasi putih', 'Ayam masak merah, dalca & lauk'] },
+      { category: 'Sampingan', items: ['Hidangan sampingan'] },
+      { category: 'Buah', items: ['Buah-buahan'] },
+      { category: 'Manisan', items: ['Kuih Melayu & manisan'] },
+      { category: 'Minuman', items: ['Sejuk, panas & air mineral'] },
+    ],
+  },
   closing: [
     'This day would not feel complete without you. Your doa, your prayers, your restu have made this day happen.',
     'Dalam setiap doa dan restu yang diterima, kami dipertemukan dan ditakdirkan sampai ke sini. Our takdir has always been cared for and guided in the most beautiful ways through you.',
-    'Terima kasih daripada kami untuk semua doa-doa yang baik. Terima kasih sudi luangkan masa untuk raikan kami. Semoga hari kita nanti diberkati dan jadi satu memori yang indah untuk semua.',
+    'Terima kasih daripada kami untuk semua doa-doa yang baik. Terima kasih sudi luangkan masa untuk raikan kami. Semoga hari kita nanti diberkati dan menjadi satu memori yang indah untuk semua.',
     'Jumpa nanti, we can’t wait to see you!',
   ],
 };
@@ -29,7 +48,7 @@ export const wedding = {
 export const pages = [
   { id: 'home', label: 'Utama', eyebrow: 'Jemputan' },
   { id: 'invitation', label: 'Jemputan', eyebrow: 'Walimatulurus' },
-  { id: 'dresscode', label: 'Dresscode', eyebrow: 'Inspirasi gaya' },
+  { id: 'dresscode', label: 'Event Details', eyebrow: 'Maklumat majlis' },
   { id: 'location', label: 'Lokasi', eyebrow: 'Lokasi majlis' },
   { id: 'rsvp', label: 'RSVP', eyebrow: 'Tempat untuk anda' },
   { id: 'note', label: '🤍', eyebrow: 'Daripada kami' },
