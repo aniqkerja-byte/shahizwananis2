@@ -2,6 +2,7 @@ export const wedding = {
   bride: 'Anis Jamilah Jamlus',
   groom: 'Mohd Shahizwan Mohammad Shahari',
   date: '9 Januari 2027',
+  hijriDate: '1 Syaaban 1448H',
   dateISO: '2027-01-09',
   day: 'Sabtu',
   time: '11.00 pagi – 4.30 petang',

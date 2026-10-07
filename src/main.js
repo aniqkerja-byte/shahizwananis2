@@ -31,7 +31,7 @@ app.innerHTML = `
     <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Buka menu"><span></span><span></span></button>
   </header>
   <aside class="sidebar">
-    <a class="brand" href="#home" aria-label="Shahizwan dan Anis — Utama"><img src="/assets/monogram.jpeg" alt="S&A" width="146" height="78" /></a>
+    <a class="brand" href="#home" aria-label="Shahizwan dan Anis — Utama"><img src="/assets/monogram-transparent.png" alt="S&A" width="292" height="157" /></a>
     <nav id="site-nav" aria-label="Halaman jemputan">${pages.map((page,i)=>`<a href="#${page.id}" data-page="${page.id}"><span class="nav-index">0${i+1}</span>${page.label}<span class="nav-dot" aria-hidden="true"></span></a>`).join('')}</nav>
   </aside>
   <div class="page-shell">
@@ -80,7 +80,7 @@ function homePage() {
   return `<section class="page home-page" aria-labelledby="page-title">
     <img class="home-flower" src="/assets/home-daisies-transparent.png" alt="" aria-hidden="true" width="1086" height="1448" />
     <h1 id="page-title" class="couple-names" tabindex="-1"><span class="groom-name">Shahizwan</span><span class="ampersand">&</span><span class="bride-name">Anis</span></h1>
-    <div class="event-summary"><span class="eyebrow">${wedding.day}</span><p class="wedding-date"><time datetime="${wedding.dateISO}">${wedding.date}</time></p><p>${wedding.time}</p><span class="short-rule"></span><p class="venue-name">${region}</p></div>
+    <div class="event-summary"><span class="eyebrow">${wedding.day}</span><p class="wedding-date"><time datetime="${wedding.dateISO}">${wedding.date}</time> <span class="date-divider" aria-hidden="true">|</span> <span class="hijri-date">${wedding.hijriDate}</span></p><p>${wedding.time}</p><span class="short-rule"></span><p class="venue-name">${region}</p></div>
   </section>`;
 }
 

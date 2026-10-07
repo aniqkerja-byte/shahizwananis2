@@ -250,3 +250,15 @@ main {
   .invitation-copy .invitation-address { font-size: 15px; }
   .invitation-copy .invitation-couple { font-size: 17px; }
 }
+
+/* Slightly reinforce the original monogram strokes without changing its shape. */
+.wordmark img, .brand img {
+  filter: drop-shadow(.2px 0 0 #16223c80) drop-shadow(-.2px 0 0 #16223c80);
+}
+.brand img { opacity: .92; }
+
+.home-page .wedding-date { display: flex; justify-content: center; align-items: baseline; gap: 24px; }
+.home-page .wedding-date > * { white-space: nowrap; }
+@media (max-width: 767px) {
+  .home-page .wedding-date { font-size: clamp(18px, 5.1vw, 22px); gap: 12px; }
+}
