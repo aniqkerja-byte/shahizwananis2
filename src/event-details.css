@@ -36,27 +36,27 @@
 .event-schedule-entry dd ul { list-style-position: inside; padding-left: 0; }
 .event-details-columns ul { padding-left: 18px; margin: 8px 0 0; }
 .event-schedule-description { margin-top: 8px; }
-.event-menu { position: relative; width: 100%; max-width: 540px; margin: 12px auto 0; padding: 32px 16px; text-align: right; }
+.event-menu { position: relative; width: 100%; max-width: 540px; margin: 12px auto 0; padding: 28px 16px; text-align: right; background: var(--paper); }
 .event-menu::before, .event-menu::after { content: ''; position: absolute; left: 50%; transform: translateX(-50%); width: 100%; height: 1px; background: var(--rule); }
 .event-menu::before { top: 0; }
 .event-menu::after { bottom: 0; }
-.event-menu-heading { display: flex; justify-content: flex-end; align-items: center; gap: 12px; margin-bottom: 16px; background: var(--paper); }
-.event-menu-flower { order: 2; width: 64px; height: auto; flex-shrink: 0; mix-blend-mode: multiply; filter: contrast(1.2); pointer-events: none; }
+.event-menu-heading { display: flex; justify-content: flex-end; align-items: center; gap: 14px; margin-bottom: 18px; background: var(--paper); }
+.event-menu-flower { order: 2; width: 72px; height: auto; flex-shrink: 0; transform: translateY(-6px); mix-blend-mode: multiply; filter: contrast(1.2); pointer-events: none; }
 .event-details-columns .event-menu h2 { margin: 0; }
 .event-menu-courses, .event-menu-course dd { margin: 0; }
-.event-menu-course + .event-menu-course { margin-top: 10px; }
-.event-menu-course dt { font-size: 17px; line-height: 1.4; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 6px; }
-.event-details-columns .event-menu-items { list-style: none; padding: 0; margin: 0; font-size: 17px; font-style: normal; line-height: 1.5; letter-spacing: 1.2px; text-transform: uppercase; }
+.event-menu-course + .event-menu-course { margin-top: 12px; }
+.event-menu-course dt { font-size: 16px; line-height: 1.5; letter-spacing: .7px; text-transform: uppercase; margin-bottom: 6px; }
+.event-details-columns .event-menu-items { list-style: none; padding: 0; margin: 0; font-size: 16px; font-style: normal; line-height: 1.7; letter-spacing: .7px; text-transform: uppercase; }
 .event-menu-items li { display: inline-block; white-space: nowrap; }
-.event-menu-items li + li::before { content: ' | '; white-space: pre-wrap; }
+.event-menu-items li:not(:last-child)::after { content: ' | '; white-space: pre-wrap; }
 @media (max-width: 767px) {
   .event-details-page { padding: 24px 6px; }
   .event-details-content { margin: 0 auto; }
   .event-dress-code, .event-schedule { font-size: 16px; }
   .event-dress-code { margin: 20px 0 28px; }
   .event-menu { padding: 28px 8px; }
-  .event-menu-heading { gap: 10px; margin-bottom: 16px; }
-  .event-menu-flower { width: 52px; }
+  .event-menu-heading { gap: 12px; margin-bottom: 16px; }
+  .event-menu-flower { width: 64px; }
   .event-menu-course dt, .event-details-columns .event-menu-items { font-size: 14px; letter-spacing: .4px; }
 }
 
