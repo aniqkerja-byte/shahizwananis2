@@ -7,10 +7,11 @@ test('Event Details retains the old link and shows all client content without sk
   await expect(page).toHaveTitle('Event Details · Shahizwan & Anis');
   await expect(page.locator('nav a[href="#dresscode"]')).toContainText('Event Details');
   await expect(page.locator('.event-dress-code p')).toHaveText([wedding.eventDetails.dressCode, wedding.eventDetails.dressCodeNote]);
-  await expect(page.locator('.event-schedule dt')).toHaveText(wedding.eventDetails.schedule.map(item => item.time));
-  await expect(page.locator('.event-schedule dd')).toHaveText(['Jemputan', 'Tetamu Khas', 'PengantinDoaSalam RestuPotong Kek', 'Jamuan']);
-  await expect(page.locator('.event-menu dt')).toHaveText(wedding.eventDetails.menu.map(course => course.category));
-  await expect(page.locator('.event-menu dd p')).toHaveText(wedding.eventDetails.menu.flatMap(course => course.items));
+  await expect(page.locator('#schedule-title')).toHaveText('Atur Cara Majlis');
+  await expect(page.locator('.event-schedule dt')).toHaveText(['11:00 pagi', '12:30 tengah hari', '11:00 pagi – 4:30 petang']);
+  await expect(page.locator('.event-schedule dd')).toHaveText(['Ketibaan para tetamu', 'Ketibaan pengantinBacaan doa & salam restu', 'Jamuan makan & beramah mesra']);
+  await expect(page.locator('.event-menu h2')).toHaveText('Hidangan');
+  await expect(page.locator('.event-menu li')).toHaveText(['Biryani', 'Hidangan Sampingan', 'Buah-buahan', 'Kuih-muih Melayu & Manisan', 'Minuman Sejuk, Panas & Air Mineral']);
   await expect(page.locator('.dress-piece, .outfit-board, .outfit-tabs, .filter-defs')).toHaveCount(0);
 });
 
@@ -34,7 +35,7 @@ for (const viewport of [{ width: 1440, height: 900 }, { width: 1366, height: 768
         return box.right < center ? 'left' : box.left > center ? 'right' : 'overlap';
       });
     });
-    expect(sides).toEqual(['left', 'right', 'left', 'right']);
+    expect(sides).toEqual(['left', 'right', 'left']);
     const iconSides = await page.locator('.event-timeline').evaluate(el => {
       const center = el.getBoundingClientRect().left + el.getBoundingClientRect().width / 2;
       return [...el.querySelectorAll('.event-timeline-icon')].map(icon => {
@@ -42,13 +43,13 @@ for (const viewport of [{ width: 1440, height: 900 }, { width: 1366, height: 768
         return box.right < center ? 'left' : box.left > center ? 'right' : 'overlap';
       });
     });
-    expect(iconSides).toEqual(['left', 'right', 'left', 'right']);
+    expect(iconSides).toEqual(['left', 'right', 'left']);
     expect(layout.menuTop).toBeGreaterThan(layout.scheduleBottom);
     if (viewport.width < 768) {
       expect(layout.scheduleSize).toBe('16px');
     }
     await page.locator('main [data-page-scroll]').evaluate(el => { el.scrollTop = el.scrollHeight; });
-    await expect(page.getByText('Sejuk, panas & air mineral', { exact: true })).toBeInViewport();
+    await expect(page.getByText('Minuman Sejuk, Panas & Air Mineral', { exact: true })).toBeInViewport();
   });
 }
 

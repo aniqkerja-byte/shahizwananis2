@@ -112,7 +112,6 @@ function eventDetailsPage() {
   const details = wedding.eventDetails;
   const timelineIcons = [
     '<circle cx="8" cy="6" r="2"/><circle cx="16" cy="7" r="2"/><path d="M3 19v-6c0-4 10-4 10 0v6M14 11c3-1 7 1 7 4v4M6 19v-4m4 4v-4m7 4v-4"/>',
-    '<path d="m12 3 3 6 6 1-4 5 1 6-6-3-6 3 1-6-4-5 6-1Z"/>',
     '<circle cx="8" cy="13" r="5"/><circle cx="16" cy="13" r="5"/><path d="m14 4 2-2 2 2-2 3Z"/>',
     '<circle cx="13" cy="12" r="7"/><path d="M2 3v5c0 2 4 2 4 0V3M4 3v18M21 3v18M21 3c-3 2-3 7 0 8"/>',
   ];
@@ -121,10 +120,10 @@ function eventDetailsPage() {
       <h1 id="page-title" tabindex="-1">Event Details</h1>
       <div class="event-dress-code"><p>${details.dressCode}</p><p>${details.dressCodeNote}</p></div>
       <div class="event-details-columns">
-        <section class="event-schedule" aria-labelledby="schedule-title"><h2 id="schedule-title">Atur Cara</h2>
-          <dl class="event-timeline">${details.schedule.map((item, index) => `<div class="event-schedule-entry"><dt><span class="event-timeline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">${timelineIcons[index]}</svg></span>${item.time}</dt><dd>${item.title}${item.activities ? `<ul>${item.activities.map(activity => `<li>${activity}</li>`).join('')}</ul>` : ''}</dd></div>`).join('')}</dl>
+        <section class="event-schedule" aria-labelledby="schedule-title"><h2 id="schedule-title">Atur Cara Majlis</h2>
+          <dl class="event-timeline">${details.schedule.map((item, index) => `<div class="event-schedule-entry"><dt><span class="event-timeline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">${timelineIcons[index]}</svg></span>${item.time}</dt><dd>${item.title}${item.description ? `<p class="event-schedule-description">${item.description}</p>` : ''}</dd></div>`).join('')}</dl>
         </section>
-        <section class="event-menu" aria-labelledby="menu-title"><h2 id="menu-title">Hidangan</h2><dl class="event-menu-courses">${details.menu.map(course => `<div class="event-menu-course"><dt>${course.category}</dt><dd>${course.items.map(item => `<p>${item}</p>`).join('')}</dd></div>`).join('')}</dl></section>
+        <section class="event-menu" aria-labelledby="menu-title"><h2 id="menu-title">Hidangan</h2><ul class="event-menu-items">${details.menu.map(item => `<li>${item}</li>`).join('')}</ul></section>
       </div>
     </div>
   </section>`;
