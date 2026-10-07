@@ -78,7 +78,7 @@ const scrollNavigation = installScrollNavigation({
 function homePage() {
   const region = wedding.location.split(',').at(-1).trim();
   return `<section class="page home-page" aria-labelledby="page-title">
-    <img class="home-flower" src="/assets/home-flowers-organic.svg" alt="" aria-hidden="true" width="180" height="200" />
+    <img class="home-flower" src="/assets/home-daisies-client.png" alt="" aria-hidden="true" width="1086" height="1448" />
     <h1 id="page-title" class="couple-names" tabindex="-1"><span class="groom-name">Shahizwan</span><span class="ampersand">&</span><span class="bride-name">Anis</span></h1>
     <div class="event-summary"><span class="eyebrow">${wedding.day}</span><p class="wedding-date"><time datetime="${wedding.dateISO}">${wedding.date}</time></p><p>${wedding.time}</p><span class="short-rule"></span><p class="venue-name">${region}</p></div>
   </section>`;
@@ -124,7 +124,7 @@ function eventDetailsPage() {
         <section class="event-schedule" aria-labelledby="schedule-title"><h2 id="schedule-title" class="event-section-title">Atur Cara Majlis</h2>
           <dl class="event-timeline">${details.schedule.map((item, index) => `<div class="event-schedule-entry"><dt><span class="event-timeline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">${timelineIcons[index]}</svg></span>${item.time}</dt><dd>${item.title}${item.description ? `<p class="event-schedule-description">${item.description}</p>` : ''}</dd></div>`).join('')}</dl>
         </section>
-        <section class="event-menu" aria-labelledby="menu-title"><div class="event-menu-heading"><img class="event-menu-flower" src="/assets/menu-calla-lilies.svg" alt="" aria-hidden="true" width="240" height="300" /><h2 id="menu-title" class="event-section-title">Hidangan</h2></div><dl class="event-menu-courses">${details.menu.map(course => `<div class="event-menu-course"><dt>${course.category}</dt>${course.items.length ? `<dd><ul class="event-menu-items">${course.items.map(item => `<li>${item}</li>`).join('')}</ul></dd>` : ''}</div>`).join('')}</dl></section>
+        <section class="event-menu" aria-labelledby="menu-title"><div class="event-menu-heading"><img class="event-menu-flower" src="/assets/home-daisies-client.png" alt="" aria-hidden="true" width="1086" height="1448" /><h2 id="menu-title" class="event-section-title">Hidangan</h2></div><dl class="event-menu-courses">${details.menu.map(course => `<div class="event-menu-course">${course.category ? `<dt>${course.category}</dt>` : ''}${course.items.length ? `<dd><ul class="event-menu-items">${course.items.map(item => `<li>${item}</li>`).join('')}</ul></dd>` : ''}</div>`).join('')}</dl></section>
       </div>
     </div>
   </section>`;

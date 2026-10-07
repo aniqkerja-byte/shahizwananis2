@@ -11,7 +11,7 @@ test('Event Details retains the old link and shows all client content without sk
   await expect(page.locator('.event-schedule dt')).toHaveText(['11:00 am', '12:30 pm', '11:00 am – 4:30 pm']);
   await expect(page.locator('.event-schedule dd')).toHaveText(['Ketibaan para tetamu', 'Ketibaan pengantinBacaan doa & salam restu', 'Jamuan makan & beramah mesra']);
   await expect(page.locator('.event-menu h2')).toHaveText('Hidangan');
-  await expect(page.locator('.event-menu dt')).toHaveText(['Utama', 'Hidangan Sampingan', 'Pencuci Mulut', 'Minuman']);
+  await expect(page.locator('.event-menu dt')).toHaveText(['Minuman']);
   await expect(page.locator('.event-menu li')).toHaveText(['Biryani', 'Buah-buahan Segar', 'Kuih-muih Melayu & Manisan', 'Minuman Sejuk & Panas', 'Air Mineral']);
   await expect(page.locator('.dress-piece, .outfit-board, .outfit-tabs, .filter-defs')).toHaveCount(0);
 });

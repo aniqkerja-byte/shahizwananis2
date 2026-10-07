@@ -5,6 +5,19 @@ html, body {
   overscroll-behavior: none;
 }
 
+/* Keep native scrolling without visible tracks on pages or transition copies. */
+html, body, #app, #app *, .site-transition-layer, .site-transition-layer * {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html::-webkit-scrollbar, body::-webkit-scrollbar, #app::-webkit-scrollbar,
+#app *::-webkit-scrollbar, .site-transition-layer::-webkit-scrollbar,
+.site-transition-layer *::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
 #app {
   height: 100vh;
   height: 100dvh;
@@ -31,7 +44,8 @@ main {
 .couple-names .groom-name { grid-column: 1 / 4; font-family: var(--script); font-size: 1em; }
 .couple-names .ampersand { grid-column: 2; justify-self: center; align-self: center; margin: 0; font-size: .55em; line-height: 1; transform: translateY(-.35em); }
 .couple-names { grid-template-columns: 1fr 45px 1fr; color: #2d568a; }
-.home-flower { display: block; width: clamp(96px, 8.5vw, 124px); height: auto; margin: 0 auto -6px; }
+.home-page { background: var(--paper); }
+.home-flower { display: block; width: clamp(96px, 8.5vw, 124px); height: auto; margin: 0 auto -6px; mix-blend-mode: multiply; filter: contrast(1.2); }
 .sidebar.is-open { max-height: calc(100dvh - 90px); overflow-y: auto; }
 
 .site-transition-layer {
