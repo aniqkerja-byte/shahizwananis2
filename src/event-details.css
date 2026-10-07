@@ -44,9 +44,9 @@
 .event-menu-flower { order: 2; width: 72px; height: auto; flex-shrink: 0; transform: translateY(-6px); mix-blend-mode: multiply; filter: contrast(1.2); pointer-events: none; }
 .event-details-columns .event-menu h2 { margin: 0; }
 .event-menu-courses, .event-menu-course dd { margin: 0; }
-.event-menu-course + .event-menu-course { margin-top: 12px; }
-.event-menu-course dt { font-size: 16px; line-height: 1.5; letter-spacing: .7px; text-transform: uppercase; margin-bottom: 6px; }
-.event-details-columns .event-menu-items { list-style: none; padding: 0; margin: 0; font-size: 16px; font-style: normal; line-height: 1.7; letter-spacing: .7px; text-transform: uppercase; }
+.event-menu-course + .event-menu-course { margin-top: 0; }
+.event-menu-course dt { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 16px; font-style: italic; font-weight: 400; line-height: 1.7; letter-spacing: 0; text-transform: none; margin-bottom: 0; }
+.event-details-columns .event-menu-items { list-style: none; padding: 0; margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 16px; font-style: italic; font-weight: 400; line-height: 1.7; letter-spacing: 0; text-transform: none; }
 .event-menu-items li { display: inline-block; white-space: nowrap; }
 .event-menu-items li:not(:last-child)::after { content: ' | '; white-space: pre-wrap; }
 @media (max-width: 767px) {
@@ -57,11 +57,13 @@
   .event-menu { padding: 28px 8px; }
   .event-menu-heading { gap: 12px; margin-bottom: 16px; }
   .event-menu-flower { width: 64px; }
-  .event-menu-course dt, .event-details-columns .event-menu-items { font-size: 14px; letter-spacing: .4px; }
+  .event-menu-course dt { font-size: 14px; }
+  .event-details-columns .event-menu-items { font-size: 14px; }
 }
 
 @media (max-width: 360px) {
-  .event-menu-course dt, .event-details-columns .event-menu-items { font-size: 13px; letter-spacing: .4px; }
+  .event-menu-course dt { font-size: 13px; }
+  .event-details-columns .event-menu-items { font-size: 13px; }
 }
 
 .event-details-page .event-section-title {
