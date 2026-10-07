@@ -46,6 +46,7 @@ let activeIndex = 0;
 let draft = { name: '', attendance: '', pax: '1' };
 let confirmation = null;
 let fitFrame = 0;
+let typographyReady = false;
 
 function fitActivePage() {
   const page = main.querySelector('.page');
@@ -177,6 +178,7 @@ function setMenu(open) {
 }
 
 function renderPage({ focus = false, immediate = false } = {}) {
+  if (!typographyReady) return;
   if (immediate) {
     pageTransitions.finish();
     commitPage({ focus });
@@ -270,4 +272,17 @@ document.addEventListener('keydown',event=>{
 });
 window.addEventListener('hashchange',()=>renderPage({focus:true}));
 window.addEventListener('resize', queueFitActivePage);
-renderPage();
+// Render only after local typefaces settle, so the first reveal never swaps fonts.
+const initialFonts = [
+  '400 16px "Great Vibes"',
+  '400 16px "Allura"',
+  '400 16px "Cormorant Garamond"',
+  '500 16px "Cormorant Garamond"',
+  'italic 400 16px "Cormorant Garamond"',
+  '400 16px "DM Sans"',
+  '500 16px "DM Sans"',
+];
+Promise.allSettled(initialFonts.map(font => document.fonts.load(font))).then(() => {
+  typographyReady = true;
+  renderPage();
+});

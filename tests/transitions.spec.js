@@ -74,3 +74,21 @@ test('Event Details headings keep their font size in incoming and outgoing visua
   await expect(outgoing).toHaveCount(3);
   expect(await outgoing.evaluateAll(elements => elements.map(el => getComputedStyle(el).fontSize))).toEqual(['26px', '26px', '26px']);
 });
+
+test('first home reveal waits for both name fonts instead of showing fallback text', async ({ page }) => {
+  let releaseFonts;
+  const fontGate = new Promise(resolve => { releaseFonts = resolve; });
+  const nameFontRequested = new Promise(resolve => {
+    page.route(/(?:great-vibes|allura).*\.woff2?/, async route => {
+      resolve();
+      await fontGate;
+      await route.continue();
+    });
+  });
+  await page.goto('/#home', { waitUntil: 'domcontentloaded' });
+  await nameFontRequested;
+  expect(await page.locator('.couple-names').count()).toBe(0);
+  releaseFonts();
+  await expect(page.locator('main .couple-names')).toBeVisible();
+  expect(await page.evaluate(() => document.fonts.check('400 16px "Great Vibes"') && document.fonts.check('400 16px "Allura"'))).toBe(true);
+});
