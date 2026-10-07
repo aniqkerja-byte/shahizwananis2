@@ -162,12 +162,22 @@ function confirmationPage() {
   return `<section class="page rsvp-page confirmation-page" aria-labelledby="page-title">${flourish}<p class="eyebrow">${confirmation.attendance === 'yes' ? 'Dengan penuh gembira' : 'Dengan penuh kasih'}</p><h1 id="page-title" tabindex="-1">${confirmation.attendance === 'yes' ? 'Selangkah lebih dekat<br>ke <em>hari bahagia kami.</em>' : 'Anda tetap bersama kami<br><em>dalam doa.</em>'}</h1><p class="confirmation-copy">${confirmation.attendance === 'yes' ? 'Terima kasih kerana sudi meraikan kami.' : 'Terima kasih atas doa dan ingatan anda.'}</p><div class="demo-confirmation"><span class="eyebrow">Pengesahan pratonton</span><p>Ini simulasi RSVP sahaja.<br>Respons anda belum disimpan atau dihantar kepada penganjur.</p></div><button class="text-link edit-rsvp">Kembali ke borang ${arrow('left')}</button><a class="text-link" href="#note">Pesanan kecil untuk anda ${arrow()}</a></section>`;
 }
 
+const notePhotos = ['shah1', 'anis3baru', 'shah2', 'anis2', 'shah3baru', 'anis1'];
+function notePortraitSource(photo, mobile) {
+  const source = mobile && photo === 'anis3baru' ? `${photo}-clean` : `${photo}-trim`;
+  return `/assets/croped/${source}-${mobile ? 'mobile' : 'desktop'}.webp`;
+}
+function preloadNotePortraits() {
+  const mobile = matchMedia('(max-width: 767px)').matches;
+  notePhotos.forEach(photo => {
+    const image = new Image();
+    image.fetchPriority = 'low';
+    image.decoding = 'async';
+    image.src = notePortraitSource(photo, mobile);
+  });
+}
 function notePage() {
-  const photos = ['shah1','anis3baru','shah2','anis2','shah3baru','anis1'];
-  const mobilePortrait = photo => photo === 'anis3baru'
-    ? '<source media="(max-width: 767px)" srcset="/assets/croped/anis3baru-clean.png" />'
-    : '';
-  return `<section class="page note-page" aria-labelledby="page-title"><h1 id="page-title" class="sr-only" tabindex="-1">Pesanan</h1><div class="scrapbook"><article class="letter">${wedding.closing.map(p=>`<p>${p}</p>`).join('')}<p class="letter-signoff">🤍 Shahizwan & Anis Jamilah</p></article><div class="memory-photos">${photos.map((photo,i)=>`<figure class="memory memory-${i+1} memory-${photo}"><picture>${mobilePortrait(photo)}<img src="/assets/croped/${photo}-trim.png" alt="Kenangan zaman kecil ${photo.startsWith('shah') ? 'Shahizwan' : 'Anis'}, foto ${i%3+1}" loading="lazy"/></picture></figure>`).join('')}</div></div></section>`;
+  return `<section class="page note-page" aria-labelledby="page-title"><h1 id="page-title" class="sr-only" tabindex="-1">Pesanan</h1><div class="scrapbook"><article class="letter">${wedding.closing.map(p=>`<p>${p}</p>`).join('')}<p class="letter-signoff">🤍 Shahizwan & Anis Jamilah</p></article><div class="memory-photos">${notePhotos.map((photo,i)=>`<figure class="memory memory-${i+1} memory-${photo}"><picture><source media="(max-width: 767px)" type="image/webp" srcset="${notePortraitSource(photo, true)}" /><img src="${notePortraitSource(photo, false)}" alt="Kenangan zaman kecil ${photo.startsWith('shah') ? 'Shahizwan' : 'Anis'}, foto ${i%3+1}" loading="eager" decoding="async"/></picture></figure>`).join('')}</div></div></section>`;
 }
 
 const templates = { home: homePage, invitation: invitationPage, dresscode: eventDetailsPage, location: locationPage, rsvp: rsvpPage, note: notePage };
@@ -285,4 +295,9 @@ const initialFonts = [
 Promise.allSettled(initialFonts.map(font => document.fonts.load(font))).then(() => {
   typographyReady = true;
   renderPage();
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(preloadNotePortraits, { timeout: 2500 });
+  } else {
+    setTimeout(preloadNotePortraits, 1500);
+  }
 });

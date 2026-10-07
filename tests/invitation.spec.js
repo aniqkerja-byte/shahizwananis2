@@ -96,9 +96,9 @@ test('navigation, direct links, history and assets work', async ({ page }) => {
   ]);
   await expect(page.locator('.memory figcaption')).toHaveCount(0);
   await expect(page.locator('.memory img')).toHaveCount(6);
-  await expect(page.locator('.memory img').first()).toHaveAttribute('src', '/assets/croped/shah1-trim.png');
+  await expect(page.locator('.memory img').first()).toHaveAttribute('src', '/assets/croped/shah1-trim-desktop.webp');
   expect(await page.locator('.memory img').evaluateAll(images => images.map(image => image.getAttribute('src').split('/').pop()))).toEqual([
-    'shah1-trim.png', 'anis3baru-trim.png', 'shah2-trim.png', 'anis2-trim.png', 'shah3baru-trim.png', 'anis1-trim.png',
+    'shah1-trim-desktop.webp', 'anis3baru-trim-desktop.webp', 'shah2-trim-desktop.webp', 'anis2-trim-desktop.webp', 'shah3baru-trim-desktop.webp', 'anis1-trim-desktop.webp',
   ]);
   await page.locator('.memory-6').scrollIntoViewIfNeeded();
   await expect.poll(()=>page.locator('main img').evaluateAll(imgs=>imgs.every(img=>img.complete && img.naturalWidth>0))).toBe(true);
@@ -437,4 +437,22 @@ test('horizontal swipes navigate both ways while vertical swipes stay on the pag
   await page.waitForTimeout(700);
   await page.keyboard.press('ArrowLeft');
   await expect(page.locator('main')).toHaveAttribute('data-page', 'dresscode');
+});
+
+test('mobile note preloads lightweight portraits and uses the clean mobile cutout', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const portraitRequests = new Set();
+  page.on('request', request => {
+    if (request.url().includes('/assets/croped/')) portraitRequests.add(request.url().split('/').pop());
+  });
+  await page.goto('/#home');
+  await expect.poll(() => portraitRequests.size).toBe(6);
+  expect([...portraitRequests].every(name => name.endsWith('-mobile.webp'))).toBe(true);
+  expect(portraitRequests.has('anis3baru-clean-mobile.webp')).toBe(true);
+  await page.evaluate(() => { location.hash = 'note'; });
+  await expect(page.locator('main')).not.toHaveAttribute('data-transitioning');
+  const images = page.locator('main .memory img');
+  await expect(images).toHaveCount(6);
+  await images.evaluateAll(images => Promise.all(images.map(image => image.decode())));
+  expect(await images.evaluateAll(images => images.every(image => image.complete && image.naturalWidth > 0 && image.currentSrc.endsWith('-mobile.webp') && image.loading === 'eager'))).toBe(true);
 });
