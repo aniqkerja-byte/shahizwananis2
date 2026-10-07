@@ -24,9 +24,9 @@ export const wedding = {
     dressCode: 'Tradisional / Smart Casual',
     dressCodeNote: 'Semua warna kecuali putih & silver.',
     schedule: [
-      { time: '11:00 pagi', title: 'Ketibaan para tetamu' },
-      { time: '12:30 tengah hari', title: 'Ketibaan pengantin', description: 'Bacaan doa & salam restu' },
-      { time: '11:00 pagi – 4:30 petang', title: 'Jamuan makan & beramah mesra' },
+      { time: '11:00 am', title: 'Ketibaan para tetamu' },
+      { time: '12:30 pm', title: 'Ketibaan pengantin', description: 'Bacaan doa & salam restu' },
+      { time: '11:00 am – 4:30 pm', title: 'Jamuan makan & beramah mesra' },
     ],
     menu: [
       { category: 'Utama', items: ['Biryani'] },
