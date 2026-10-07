@@ -3,7 +3,7 @@ import { wedding } from '../src/content.js';
 
 test('Event Details retains the old link and shows all client content without sketches', async ({ page }) => {
   await page.goto('/#dresscode');
-  await expect(page.locator('main #page-title')).toHaveText('Event Details');
+  await expect(page.locator('main #page-title')).toHaveText('Dress Code');
   await expect(page).toHaveTitle('Event Details · Shahizwan & Anis');
   await expect(page.locator('nav a[href="#dresscode"]')).toContainText('Event Details');
   await expect(page.locator('.event-dress-code p')).toHaveText([wedding.eventDetails.dressCode, wedding.eventDetails.dressCodeNote]);
@@ -11,7 +11,8 @@ test('Event Details retains the old link and shows all client content without sk
   await expect(page.locator('.event-schedule dt')).toHaveText(['11:00 pagi', '12:30 tengah hari', '11:00 pagi – 4:30 petang']);
   await expect(page.locator('.event-schedule dd')).toHaveText(['Ketibaan para tetamu', 'Ketibaan pengantinBacaan doa & salam restu', 'Jamuan makan & beramah mesra']);
   await expect(page.locator('.event-menu h2')).toHaveText('Hidangan');
-  await expect(page.locator('.event-menu li')).toHaveText(['Biryani', 'Hidangan Sampingan', 'Buah-buahan', 'Kuih-muih Melayu & Manisan', 'Minuman Sejuk, Panas & Air Mineral']);
+  await expect(page.locator('.event-menu dt')).toHaveText(['Utama', 'Hidangan Sampingan', 'Pencuci Mulut', 'Minuman']);
+  await expect(page.locator('.event-menu li')).toHaveText(['Biryani', 'Buah-buahan Segar', 'Kuih-muih Melayu & Manisan', 'Minuman Sejuk & Panas', 'Air Mineral']);
   await expect(page.locator('.dress-piece, .outfit-board, .outfit-tabs, .filter-defs')).toHaveCount(0);
 });
 
@@ -49,7 +50,7 @@ for (const viewport of [{ width: 1440, height: 900 }, { width: 1366, height: 768
       expect(layout.scheduleSize).toBe('16px');
     }
     await page.locator('main [data-page-scroll]').evaluate(el => { el.scrollTop = el.scrollHeight; });
-    await expect(page.getByText('Minuman Sejuk, Panas & Air Mineral', { exact: true })).toBeInViewport();
+    await expect(page.getByText('Air Mineral', { exact: true })).toBeInViewport();
   });
 }
 

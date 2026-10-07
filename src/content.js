@@ -29,11 +29,10 @@ export const wedding = {
       { time: '11:00 pagi – 4:30 petang', title: 'Jamuan makan & beramah mesra' },
     ],
     menu: [
-      'Biryani',
-      'Hidangan Sampingan',
-      'Buah-buahan',
-      'Kuih-muih Melayu & Manisan',
-      'Minuman Sejuk, Panas & Air Mineral',
+      { category: 'Utama', items: ['Biryani'] },
+      { category: 'Hidangan Sampingan', items: [] },
+      { category: 'Pencuci Mulut', items: ['Buah-buahan Segar', 'Kuih-muih Melayu & Manisan'] },
+      { category: 'Minuman', items: ['Minuman Sejuk & Panas', 'Air Mineral'] },
     ],
   },
   closing: [

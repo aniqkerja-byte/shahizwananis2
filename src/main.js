@@ -117,13 +117,13 @@ function eventDetailsPage() {
   ];
   return `<section class="page event-details-page" data-page-scroll tabindex="0" aria-labelledby="page-title">
     <div class="event-details-content">
-      <h1 id="page-title" tabindex="-1">Event Details</h1>
+      <h1 id="page-title" class="event-section-title" tabindex="-1">Dress Code</h1>
       <div class="event-dress-code"><p>${details.dressCode}</p><p>${details.dressCodeNote}</p></div>
       <div class="event-details-columns">
-        <section class="event-schedule" aria-labelledby="schedule-title"><h2 id="schedule-title">Atur Cara Majlis</h2>
+        <section class="event-schedule" aria-labelledby="schedule-title"><h2 id="schedule-title" class="event-section-title">Atur Cara Majlis</h2>
           <dl class="event-timeline">${details.schedule.map((item, index) => `<div class="event-schedule-entry"><dt><span class="event-timeline-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">${timelineIcons[index]}</svg></span>${item.time}</dt><dd>${item.title}${item.description ? `<p class="event-schedule-description">${item.description}</p>` : ''}</dd></div>`).join('')}</dl>
         </section>
-        <section class="event-menu" aria-labelledby="menu-title"><h2 id="menu-title">Hidangan</h2><ul class="event-menu-items">${details.menu.map(item => `<li>${item}</li>`).join('')}</ul></section>
+        <section class="event-menu" aria-labelledby="menu-title"><div class="event-menu-heading"><img class="event-menu-flower" src="/assets/menu-calla-lilies.svg" alt="" aria-hidden="true" width="240" height="300" /><h2 id="menu-title" class="event-section-title">Hidangan</h2></div><dl class="event-menu-courses">${details.menu.map(course => `<div class="event-menu-course"><dt>${course.category}</dt>${course.items.length ? `<dd><ul class="event-menu-items">${course.items.map(item => `<li>${item}</li>`).join('')}</ul></dd>` : ''}</div>`).join('')}</dl></section>
       </div>
     </div>
   </section>`;

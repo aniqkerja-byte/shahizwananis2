@@ -59,3 +59,18 @@ test('reduced motion and resize settle a transition with the correct destination
   await expect(page.locator('main')).not.toHaveAttribute('data-transitioning');
   expect(await page.evaluate(() => document.documentElement.scrollHeight <= innerHeight)).toBe(true);
 });
+
+test('Event Details headings keep their font size in incoming and outgoing visual clones', async ({ page }) => {
+  await page.goto('/#home');
+  await expect(page.locator('main')).not.toHaveAttribute('data-transitioning');
+  await page.evaluate(() => { location.hash = 'dresscode'; });
+  const incoming = page.locator('.site-transition-new .event-section-title');
+  await expect(incoming).toHaveCount(3);
+  expect(await incoming.evaluateAll(elements => elements.map(el => getComputedStyle(el).fontSize))).toEqual(['26px', '26px', '26px']);
+  await expect(page.locator('main')).not.toHaveAttribute('data-transitioning');
+  expect(await page.locator('main .event-section-title').evaluateAll(elements => elements.map(el => getComputedStyle(el).fontSize))).toEqual(['26px', '26px', '26px']);
+  await page.evaluate(() => { location.hash = 'location'; });
+  const outgoing = page.locator('.site-transition-old .event-section-title');
+  await expect(outgoing).toHaveCount(3);
+  expect(await outgoing.evaluateAll(elements => elements.map(el => getComputedStyle(el).fontSize))).toEqual(['26px', '26px', '26px']);
+});
