@@ -22,16 +22,19 @@ export const wedding = {
   ],
   eventDetails: {
     dressCode: 'Tradisional / Smart Casual',
-    dressCodeNote: 'Semua warna kecuali putih & silver.',
+    dressCodeNote: 'Apa sahaja warna pilihan anda kecuali putih & silver.',
     schedule: [
       { time: '11:00 am', title: 'Ketibaan para tetamu' },
       { time: '12:30 pm', title: 'Ketibaan pengantin', description: 'Bacaan doa & salam restu' },
       { time: '11:00 am – 4:30 pm', title: 'Jamuan makan & beramah mesra' },
     ],
     menu: [
-      { category: null, items: ['Biryani'] },
-      { category: null, items: ['Buah-buahan Segar', 'Kuih-muih Melayu & Manisan'] },
-      { category: 'Minuman', items: ['Minuman Sejuk & Panas', 'Air Mineral'] },
+      'Biryani',
+      'Hidangan Sampingan & Pembuka Selera',
+      'Buah-buahan',
+      'Kuih-muih Melayu & Manisan',
+      'Minuman sejuk & panas',
+      'Air mineral',
     ],
   },
   closing: [

@@ -28,8 +28,17 @@ test('navigation, direct links, history and assets work', async ({ page }) => {
   page.on('pageerror', error => errors.push(error.message));
   await page.goto('/');
   await expect(page.locator('main')).toHaveAttribute('data-page', 'home');
-  await expect(page.locator('.home-flower')).toHaveAttribute('src', '/assets/home-daisies-client.png');
+  await expect(page.locator('.home-flower')).toHaveAttribute('src', '/assets/home-daisies-transparent.png');
   await expect(page.locator('.home-flower')).toHaveAttribute('alt', '');
+  expect(await page.locator('.home-flower').evaluate(async image => {
+    await image.decode();
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 1;
+    const context = canvas.getContext('2d');
+    context.drawImage(image, 0, 0, 1, 1, 0, 0, 1, 1);
+    return context.getImageData(0, 0, 1, 1).data[3];
+  })).toBe(0);
+
   await expect(page.locator('link[rel="icon"]')).toHaveAttribute('href', '/favicon.png');
   const favicon = await page.request.get('/favicon.png');
   expect(favicon.ok()).toBe(true);

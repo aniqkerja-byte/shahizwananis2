@@ -45,7 +45,7 @@ main {
 .couple-names .ampersand { grid-column: 2; justify-self: center; align-self: center; margin: 0; font-size: .55em; line-height: 1; transform: translateY(-.35em); }
 .couple-names { grid-template-columns: 1fr 45px 1fr; color: #2d568a; }
 .home-page { background: var(--paper); }
-.home-flower { display: block; width: clamp(96px, 8.5vw, 124px); height: auto; margin: 0 auto -6px; mix-blend-mode: multiply; filter: contrast(1.2); }
+.home-flower { display: block; width: clamp(96px, 8.5vw, 124px); height: auto; margin: 0 auto -6px; }
 .sidebar.is-open { max-height: calc(100dvh - 90px); overflow-y: auto; }
 
 .site-transition-layer {
