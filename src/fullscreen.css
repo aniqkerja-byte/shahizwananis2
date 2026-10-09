@@ -251,10 +251,7 @@ main {
   .invitation-copy .invitation-couple { font-size: 17px; }
 }
 
-/* Reinforce the original monogram strokes while preserving its shape. */
-.wordmark img, .brand img {
-  filter: drop-shadow(.4px 0 0 #16223cb3) drop-shadow(-.4px 0 0 #16223cb3) drop-shadow(0 .25px 0 #16223c80) drop-shadow(0 -.25px 0 #16223c80);
-}
+/* Stroke weight is built into the transparent monogram asset. */
 .brand img { opacity: 1; }
 
 .home-page .wedding-date { display: flex; justify-content: center; align-items: baseline; gap: 24px; }

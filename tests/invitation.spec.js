@@ -321,7 +321,7 @@ test('mobile menu and reduced motion',async({page})=>{
 test('mobile shows the official monogram and uses menu without a footer', async ({ page }) => {
   await page.setViewportSize({width:390,height:844});
   await page.goto('/#home');
-  await expect(page.locator('.mobile-header .wordmark img')).toHaveAttribute('src', '/assets/monogram-transparent.png');
+  await expect(page.locator('.mobile-header .wordmark img')).toHaveAttribute('src', '/assets/monogram-bold-transparent.png');
   await expect(page.locator('.mobile-header .wordmark')).toBeVisible();
   expect(await page.locator('.mobile-header .wordmark').evaluate(element => {
     const logo = element.getBoundingClientRect();

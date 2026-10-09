@@ -27,11 +27,11 @@ const pin = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="smal
 const app = document.querySelector('#app');
 app.innerHTML = `
   <header class="mobile-header">
-    <a class="wordmark" href="#home" aria-label="Shahizwan dan Anis — Utama"><img src="/assets/monogram-transparent.png" alt="" width="292" height="157" /></a>
+    <a class="wordmark" href="#home" aria-label="Shahizwan dan Anis — Utama"><img src="/assets/monogram-bold-transparent.png" alt="" width="1710" height="920" /></a>
     <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Buka menu"><span></span><span></span></button>
   </header>
   <aside class="sidebar">
-    <a class="brand" href="#home" aria-label="Shahizwan dan Anis — Utama"><img src="/assets/monogram-transparent.png" alt="S&A" width="292" height="157" /></a>
+    <a class="brand" href="#home" aria-label="Shahizwan dan Anis — Utama"><img src="/assets/monogram-bold-transparent.png" alt="S&A" width="1710" height="920" /></a>
     <nav id="site-nav" aria-label="Halaman jemputan">${pages.map((page,i)=>`<a href="#${page.id}" data-page="${page.id}"><span class="nav-index">0${i+1}</span>${page.label}<span class="nav-dot" aria-hidden="true"></span></a>`).join('')}</nav>
   </aside>
   <div class="page-shell">
