@@ -121,15 +121,15 @@ test('bride invitation uses supplied wording and preview query remains separate'
     'menjemput',
     'Tan Sri / Puan Sri / Dato’ / Datin / Tuan / Puan / Encik / Cik',
     'ke majlis walimatulurus puteri kesayangan kami bersama pasangan pilihan hatinya',
-    'Mohd Shahizwan Mohammad Shahari&Anis Jamilah Jamlus',
+    'Anis Jamilah Jamlus&Mohd Shahizwan Mohammad Shahari',
   ]);
   expect(await page.locator('.invitation-hosts').evaluate(element => getComputedStyle(element).textTransform)).toBe('uppercase');
   expect(await page.locator('.invitation-name-bride').evaluate(element => getComputedStyle(element).fontFamily)).toContain('Great Vibes');
   expect(await page.locator('.invitation-name-groom').evaluate(element => getComputedStyle(element).fontFamily)).toContain('Great Vibes');
   await expect(page.locator('.invitation-couple > span')).toHaveText([
-    'Mohd Shahizwan Mohammad Shahari',
-    '&',
     'Anis Jamilah Jamlus',
+    '&',
+    'Mohd Shahizwan Mohammad Shahari',
   ]);
   await page.setViewportSize({width:390,height:844});
   expect(await page.locator('.invitation-hosts').evaluate(element => getComputedStyle(element).textTransform)).toBe('uppercase');
@@ -153,10 +153,10 @@ test('bride and groom site configs contain their own invitation copy', () => {
   expect(brideSite.showInvitationPage).toBe(true);
   expect(brideSite.invitation.hosts).toEqual(["Dato' Ir. Jamlus Aziz", 'Datin Hamidah Mansor']);
   expect(brideSite.invitation.event).toContain('puteri kesayangan kami');
-  expect(brideSite.invitation.firstName).toBe('Mohd Shahizwan Mohammad Shahari');
-  expect(brideSite.invitation.firstNameRole).toBe('groom');
-  expect(brideSite.invitation.secondName).toBe('Anis Jamilah Jamlus');
-  expect(brideSite.invitation.secondNameRole).toBe('bride');
+  expect(brideSite.invitation.firstName).toBe('Anis Jamilah Jamlus');
+  expect(brideSite.invitation.firstNameRole).toBe('bride');
+  expect(brideSite.invitation.secondName).toBe('Mohd Shahizwan Mohammad Shahari');
+  expect(brideSite.invitation.secondNameRole).toBe('groom');
   expect(groomSite.showInvitationPage).toBe(true);
   expect(groomSite.inviteSide).toBe('lelaki');
   expect(groomSite.invitation.hosts).toEqual(['Mohammad Shahari Ludin', 'Sariah Datok Gempa Borhan']);
@@ -217,9 +217,13 @@ test('desktop note portraits stay clear of the letter and within main', async ({
   }
 });
 
-test('RSVP validates, preserves drafts, and never sends or persists responses', async ({ page }) => {
+test('RSVP validates, preserves drafts on failure, and confirms only a saved response', async ({ page }) => {
   const requests=[];
-  page.on('request', request=>{if(['fetch','xhr'].includes(request.resourceType())) requests.push(request.url());});
+  let storageAvailable = false;
+  await page.route('**/api/rsvp', async route => {
+    requests.push(route.request().postDataJSON());
+    await route.fulfill({status: storageAvailable ? 200 : 503, contentType:'application/json',body:JSON.stringify({ok:storageAvailable})});
+  });
   await page.goto('/#rsvp');
   await expect(page.locator('#page-title')).toHaveText('RSVP');
   await expect(page.locator('.desktop-header')).toBeVisible();
@@ -252,17 +256,51 @@ test('RSVP validates, preserves drafts, and never sends or persists responses', 
   await page.locator('nav a[href="#rsvp"]').click();
   await expect(page.getByLabel('Nama penuh')).toHaveValue('Tetamu Ujian');
   await expect(page.getByRole('spinbutton')).toHaveValue('2');
+  expect(requests).toEqual([]);
   await page.getByRole('button',{name:'Hantar RSVP'}).click();
-  await expect(page.locator('.demo-confirmation')).toContainText('belum disimpan atau dihantar');
-  await page.getByRole('button',{name:'Kembali ke borang'}).click();
+  await expect(page.locator('#submit-error')).toContainText('belum dapat disahkan');
+  await expect(page.getByLabel('Nama penuh')).toHaveValue('Tetamu Ujian');
+  await expect(page.getByRole('spinbutton')).toHaveValue('2');
+  storageAvailable = true;
+  await page.getByRole('button',{name:'Hantar RSVP'}).click();
+  await expect(page.locator('.rsvp-saved')).toContainText('telah disimpan');
+  await expect(page.locator('.demo-confirmation')).toHaveCount(0);
+  await page.reload();
+  await page.getByLabel('Nama penuh').fill('Tetamu Tidak Hadir');
   await page.locator('input[value="no"]').check();
   await expect(page.locator('.pax-field')).toBeHidden();
   await page.getByRole('button',{name:'Hantar RSVP'}).click();
   await expect(page.locator('h1')).toContainText('dalam doa');
-  expect(requests).toEqual([]);
+  expect(requests).toEqual([
+    {name:'Tetamu Ujian',attendance:'yes',pax:2},
+    {name:'Tetamu Ujian',attendance:'yes',pax:2},
+    {name:'Tetamu Tidak Hadir',attendance:'no',pax:0},
+  ]);
   expect(await page.evaluate(()=>({local:localStorage.length,session:sessionStorage.length}))).toEqual({local:0,session:0});
   await page.reload();
   await expect(page.getByLabel('Nama penuh')).toHaveValue('');
+});
+
+test('RSVP pending submission survives navigation without a duplicate request', async ({ page }) => {
+  let finish;
+  const pending = new Promise(resolve => finish = resolve);
+  let writes = 0;
+  await page.route('**/api/rsvp', async route => {
+    writes++;
+    await pending;
+    await route.fulfill({contentType:'application/json',body:'{"ok":true}'});
+  });
+  await page.goto('/#rsvp');
+  await page.getByLabel('Nama penuh').fill('Tetamu');
+  await page.locator('input[value="yes"]').check();
+  await page.getByRole('button',{name:'Hantar RSVP'}).click();
+  await expect(page.getByRole('button',{name:'Menghantar…'})).toBeDisabled();
+  await page.locator('nav a[href="#home"]').click();
+  await page.locator('nav a[href="#rsvp"]').click();
+  await expect(page.getByRole('button',{name:'Menghantar…'})).toBeDisabled();
+  finish();
+  await expect(page.locator('.rsvp-saved')).toBeVisible();
+  expect(writes).toBe(1);
 });
 
 for(const width of [320,390,768,1440]) {

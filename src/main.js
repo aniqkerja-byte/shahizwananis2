@@ -9,6 +9,7 @@ import './styles.css';
 import './fullscreen.css';
 import './event-details.css';
 import './location.css';
+import './rsvp.css';
 import { pages as allPages, wedding } from './content.js';
 import { brideSite, siteConfig } from './config/index.js';
 import { submitRsvp, validateRsvp } from './rsvp.js';
@@ -45,6 +46,8 @@ const pageTransitions = createPageTransitions(main);
 let activeIndex = 0;
 let draft = { name: '', attendance: '', pax: '1' };
 let confirmation = null;
+let rsvpPending = false;
+let rsvpError = '';
 let fitFrame = 0;
 let typographyReady = false;
 
@@ -155,11 +158,11 @@ function rsvpPage() {
     <form id="rsvp-form" novalidate><div class="form-field"><label for="guest-name">Nama penuh</label><input id="guest-name" name="name" autocomplete="name" maxlength="120" required placeholder="Nama anda" aria-describedby="name-error" /><p id="name-error" class="field-error"></p></div>
     <fieldset class="attendance-field"><legend>Kehadiran</legend><div class="attendance-options"><label><input type="radio" name="attendance" value="yes" required aria-describedby="attendance-error" /><span><span class="radio-dot"></span>Saya akan hadir</span></label><label><input type="radio" name="attendance" value="no" required aria-describedby="attendance-error" /><span><span class="radio-dot"></span>Maaf, tidak dapat hadir</span></label></div><p id="attendance-error" class="field-error"></p></fieldset>
     <div class="form-field pax-field"><label for="guest-pax">Bilangan tetamu <span>Termasuk diri anda</span></label><div class="pax-input"><button type="button" class="pax-minus" aria-label="Kurangkan bilangan tetamu">−</button><input id="guest-pax" name="pax" type="number" min="1" max="99" step="1" value="1" inputmode="numeric" required aria-describedby="pax-error" /><button type="button" class="pax-plus" aria-label="Tambah bilangan tetamu">+</button></div><p id="pax-error" class="field-error"></p></div>
-    <button type="submit" class="button submit-button">Hantar RSVP ${arrow()}</button></form></section>`;
+    <button type="submit" class="button submit-button" ${rsvpPending ? 'disabled' : ''}>${rsvpPending ? 'Menghantar…' : 'Hantar RSVP'} ${arrow()}</button><p id="submit-error" class="field-error submit-error" role="alert"></p></form></section>`;
 }
 
 function confirmationPage() {
-  return `<section class="page rsvp-page confirmation-page" aria-labelledby="page-title">${flourish}<p class="eyebrow">${confirmation.attendance === 'yes' ? 'Dengan penuh gembira' : 'Dengan penuh kasih'}</p><h1 id="page-title" tabindex="-1">${confirmation.attendance === 'yes' ? 'Selangkah lebih dekat<br>ke <em>hari bahagia kami.</em>' : 'Anda tetap bersama kami<br><em>dalam doa.</em>'}</h1><p class="confirmation-copy">${confirmation.attendance === 'yes' ? 'Terima kasih kerana sudi meraikan kami.' : 'Terima kasih atas doa dan ingatan anda.'}</p><div class="demo-confirmation"><span class="eyebrow">Pengesahan pratonton</span><p>Ini simulasi RSVP sahaja.<br>Respons anda belum disimpan atau dihantar kepada penganjur.</p></div><button class="text-link edit-rsvp">Kembali ke borang ${arrow('left')}</button><a class="text-link" href="#note">Pesanan kecil untuk anda ${arrow()}</a></section>`;
+  return `<section class="page rsvp-page confirmation-page" aria-labelledby="page-title">${flourish}<p class="eyebrow">${confirmation.attendance === 'yes' ? 'Dengan penuh gembira' : 'Dengan penuh kasih'}</p><h1 id="page-title" tabindex="-1">${confirmation.attendance === 'yes' ? 'Selangkah lebih dekat<br>ke <em>hari bahagia kami.</em>' : 'Anda tetap bersama kami<br><em>dalam doa.</em>'}</h1><p class="confirmation-copy">${confirmation.attendance === 'yes' ? 'Terima kasih kerana sudi meraikan kami.' : 'Terima kasih atas doa dan ingatan anda.'}</p><p class="rsvp-saved" role="status">Respons RSVP anda telah disimpan.</p><a class="text-link" href="#note">Pesanan kecil untuk anda ${arrow()}</a></section>`;
 }
 
 const notePhotos = ['shah1', 'anis3baru', 'shah2', 'anis2', 'shah3baru', 'anis1'];
@@ -234,9 +237,9 @@ function commitPage({ focus = false } = {}) {
 function bindRsvp() {
   const form = document.querySelector('#rsvp-form');
   if (!form) {
-    document.querySelector('.edit-rsvp').addEventListener('click',()=>{confirmation=null;renderPage({focus:true,immediate:true});});
     return;
   }
+  document.querySelector('#submit-error').textContent = rsvpError;
   form.elements.name.value = draft.name;
   form.elements.attendance.value = draft.attendance;
   form.elements.pax.value = draft.pax;
@@ -251,13 +254,16 @@ function bindRsvp() {
     updatePaxVisibility();
   };
   updatePaxVisibility();
+  if (rsvpPending) form.querySelectorAll('input, button').forEach(input => input.disabled = true);
   form.addEventListener('input', capture);
   form.addEventListener('change', capture);
   const step = amount => {const field=form.elements.pax; field.value=Math.max(1,Math.min(99,(Number(field.value)||1)+amount));capture();};
   document.querySelector('.pax-minus').addEventListener('click',()=>step(-1));
   document.querySelector('.pax-plus').addEventListener('click',()=>step(1));
   form.addEventListener('submit',async event=>{
-    event.preventDefault();capture();
+    event.preventDefault();
+    if (rsvpPending) return;
+    capture();
     const errors=validateRsvp(draft);
     for(const field of ['name','attendance','pax']) {
       document.querySelector(`#${field}-error`).textContent=errors[field]||'';
@@ -265,10 +271,19 @@ function bindRsvp() {
     }
     if(Object.keys(errors).length){form.querySelector(`[name="${Object.keys(errors)[0]}"]`).focus();return;}
     const button=form.querySelector('[type="submit"]');
+    rsvpPending=true;
+    rsvpError='';
+    document.querySelector('#submit-error').textContent='';
     button.disabled=true;
-    const result=await submitRsvp(draft);
-    if(result.ok){confirmation=result;renderPage({focus:true,immediate:true});}
-    else button.disabled=false;
+    button.textContent='Menghantar…';
+    form.querySelectorAll('input, button').forEach(input => input.disabled = true);
+    form.setAttribute('aria-busy','true');
+    const result=await submitRsvp({...draft});
+    rsvpPending=false;
+    if(result.ok) confirmation=result;
+    else rsvpError=result.message || 'RSVP belum dapat disahkan. Sila cuba lagi.';
+    // A submission can finish after the guest has navigated to another page.
+    if (pages[activeIndex].id === 'rsvp') renderPage({focus:true,immediate:true});
   });
 }
 

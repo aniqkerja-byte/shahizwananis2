@@ -34,9 +34,9 @@ npx playwright install chromium
 npm test
 ```
 
-RSVP is a simulation. Responses remain in memory only and are never sent or saved. Google Sheets is not connected. Maps opens a venue search; confirm the exact venue pin before launch. WhatsApp links open prefilled drafts without sending them.
+RSVP submits to a server endpoint and confirms only after a Google Sheets append succeeds. Configure server credentials and the deployment-specific sheet ID using [RSVP setup](docs/RSVP-SETUP.md). Until configured, submissions show an error and preserve the form. Run `npm run test:api` for backend checks. Maps opens a venue search; confirm the exact venue pin before launch. WhatsApp links open prefilled drafts without sending them.
 
-Edit wedding copy in src/content.js, pages in src/main.js, and visual styling in src/styles.css. The future RSVP integration boundary is src/rsvp.js; credentials must never be embedded in frontend code. Image provenance and generation prompt: [docs/ASSETS.md](docs/ASSETS.md).
+Edit wedding copy in src/content.js, pages in src/main.js, and visual styling in src/styles.css. RSVP client code is in src/rsvp.js, with the Vercel handler in api/rsvp.js and Google Sheets storage in server/rsvp.js. Credentials must never be embedded in frontend code. Image provenance and generation prompt: [docs/ASSETS.md](docs/ASSETS.md).
 
 Scroll or swipe to change pages. Each page fills one viewport without internal scrolling; sections scale responsively when a short screen needs more space. Fullscreen behaviour is in `src/scroll-navigation.js` and `src/fullscreen.css`.
 

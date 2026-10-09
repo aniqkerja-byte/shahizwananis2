@@ -32,7 +32,7 @@ for (const viewport of [{width:1440,height:900},{width:1366,height:768},{width:3
     expect(layout.overflow).toBe(false);
     expect(layout.scrollbar).toBe('none');
     expect(layout.noteSize).toBe(viewport.width<768?'13px':'14px');
-    expect(layout.headingSize).toBe(viewport.width<768?'16px':'17px');
+    expect(layout.headingSize).toBe(viewport.width<768?'12px':'14px');
     expect(layout.noteWidth).toBeLessThanOrEqual(560);
     expect(layout.noteTop).toBeGreaterThan(layout.contactsBottom);
     await page.locator('main [data-page-scroll]').evaluate(el=>{el.scrollTop=el.scrollHeight;});
